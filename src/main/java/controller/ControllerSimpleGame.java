@@ -43,4 +43,9 @@ public class ControllerSimpleGame extends AbstractController {
     public void pause() {
         game.pause();
     }
+
+    @Override
+    public void setSpeed(int speed) {
+        game.setTimeMs(speed * 1000);
+    }
 }

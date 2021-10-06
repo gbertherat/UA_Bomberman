@@ -1,6 +1,7 @@
 package controller;
 
 import model.BombermanGame;
+import model.Game;
 import model.InputMap;
 import view.PanelBomberman;
 import view.ViewBombermanGame;
@@ -38,7 +39,6 @@ public class ControllerBombermanGame extends AbstractController{
     @Override
     public void restart() {
         bg.restart();
-        bg.init();
         vbg.restart();
     }
 
@@ -49,11 +49,16 @@ public class ControllerBombermanGame extends AbstractController{
 
     @Override
     public void play() {
-        bg.resume();
+        bg.launch();
     }
 
     @Override
     public void pause() {
         bg.pause();
+    }
+
+    @Override
+    public void setSpeed(int speed) {
+        bg.setTimeMs(speed * 1000);
     }
 }

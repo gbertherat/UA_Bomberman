@@ -4,6 +4,8 @@ import model.BombermanGame;
 import model.Game;
 import model.InputMap;
 import utils.InfoAgent;
+import utils.InfoBomb;
+import utils.InfoItem;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -23,6 +25,18 @@ public class ViewBombermanGame extends Frame{
     }
 
     public void restart(){
+        mainPanel.updateInfoGame(
+                map.getStart_breakable_walls(),
+                map.getStart_agents(),
+                new ArrayList<>(),
+                new ArrayList<>());
+        mainPanel.repaint();
+    }
+
+    @Override
+    public void init(int width, int height, int yoffset) {
+        super.init(width, height, yoffset);
+        frame = super.getJFrame();
         int cols = map.get_walls()[0].length;
         int rows = map.get_walls().length;
         mainPanel = new PanelBomberman(rows,
@@ -30,13 +44,6 @@ public class ViewBombermanGame extends Frame{
                 map.get_walls(),
                 map.getStart_breakable_walls(),
                 map.getStart_agents());
-    }
-
-    @Override
-    public void init(int width, int height, int yoffset) {
-        super.init(width, height, yoffset);
-        frame = super.getJFrame();
-        restart();
         frame.setContentPane(mainPanel);
         frame.setVisible(true);
     }

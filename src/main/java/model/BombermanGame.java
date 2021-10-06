@@ -8,6 +8,7 @@ import utils.InfoBomb;
 import utils.InfoItem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class BombermanGame extends Game {
@@ -74,7 +75,7 @@ public class BombermanGame extends Game {
         this.bombList = new ArrayList<>();
         this.itemList = new ArrayList<>();
         this.breakableWalls = map.getStart_breakable_walls();
-
+        init();
         setChanged();
         notifyObservers();
     }
@@ -85,7 +86,10 @@ public class BombermanGame extends Game {
         for(Character character : characterList){
             AgentAction randomAction = AgentAction.values()[random.nextInt(AgentAction.values().length)];
             if (randomAction == AgentAction.PUT_BOMB) {
-                bombList.add(character.putBomb());
+                if(bombList.stream().noneMatch(e -> e.getX() == character.getInfo().getX()
+                                                && e.getY() == character.getInfo().getY())){
+                    bombList.add(character.putBomb());
+                }
             } else {
                 character.move(randomAction, this);
             }
