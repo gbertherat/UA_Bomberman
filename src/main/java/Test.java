@@ -4,6 +4,6 @@ import controller.ControllerSimpleGame;
 
 public class Test {
     public static void main(String[] args) {
-        AbstractController controller = new ControllerBombermanGame();
+        AbstractController controller = new ControllerBombermanGame("niveau2");
     }
 }

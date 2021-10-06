@@ -1,12 +1,13 @@
 package model;
 
-import com.sun.org.apache.bcel.internal.util.ClassPath;
 import utils.AgentAction;
 import utils.ColorAgent;
 import utils.InfoAgent;
 
-import java.io.*;
-import java.net.URL;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -17,8 +18,6 @@ import java.util.Objects;
 
 public class InputMap implements Serializable {
     private static final long serialVersionUID = 1L;
-
-
     private String filename;
     private int size_x;
     private int size_y;

@@ -18,6 +18,10 @@ public abstract class Game extends Observable implements Runnable {
         return turn;
     }
 
+    public void setTurn(int turn) {
+        this.turn = turn;
+    }
+
     public int getMaxturn(){
         return maxturn;
     }
@@ -50,11 +54,6 @@ public abstract class Game extends Observable implements Runnable {
         isRunning = true;
     }
 
-    public void restart(){
-        isRunning = false;
-        turn = 0;
-    }
-
     public void run(){
         while(isRunning){
             step();
@@ -70,6 +69,10 @@ public abstract class Game extends Observable implements Runnable {
         this.isRunning = true;
         thread = new Thread(this);
         thread.start();
+    }
+
+    public void restart(){
+        turn = 0;
     }
 
     abstract void takeTurn();

@@ -10,6 +10,7 @@ import java.awt.image.RescaleOp;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 /**
@@ -22,7 +23,7 @@ public class PanelBomberman extends JPanel {
     private static final long serialVersionUID = 1L;
     protected Color wallColor = Color.GRAY;
     protected Color brokable_walls_Color = Color.lightGray;
-    protected Color ground_Color = new Color(50, 175, 50);
+    protected Color ground_Color = new Color(50, 150, 50);
 
 
     private int sizeX;
@@ -44,9 +45,7 @@ public class PanelBomberman extends JPanel {
     protected ArrayList<InfoItem> listInfoItems;
     protected ArrayList<InfoBomb> listInfoBombs;
 
-
     private boolean breakable_walls[][];
-
 
     private boolean[][] walls;
 
@@ -54,10 +53,8 @@ public class PanelBomberman extends JPanel {
     int cpt;
 
     public PanelBomberman(int sizeX, int sizeY, boolean[][] walls, boolean[][] breakable_walls, ArrayList<InfoAgent> listInfoAgents) {
-
         this.sizeX = sizeX;
         this.sizeY = sizeY;
-
 
         this.walls = walls;
 
@@ -66,12 +63,9 @@ public class PanelBomberman extends JPanel {
 
         this.listInfoItems = new ArrayList<InfoItem>();
         this.listInfoBombs = new ArrayList<InfoBomb>();
-
-
     }
 
     public void paint(Graphics g) {
-
         fen_x = getSize().width;
         fen_y = getSize().height;
 
@@ -88,29 +82,22 @@ public class PanelBomberman extends JPanel {
 
             for (int y = 0; y < sizeY; y++) {
                 if (walls[x][y]) {
-
                     try {
-                        Image img = ImageIO.read(new File("./images/wall.png"));
+                        Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/wall.png")));
                         g.drawImage(img, (int) position_x, (int) position_y, (int) stepx, (int) stepy, this);
-
-
                     } catch (IOException e) {
                         e.printStackTrace();
-
                     }
                 } else if (this.breakable_walls[x][y]) {
-
                     try {
-                        Image img = ImageIO.read(new File("./images/brique_2.png"));
+                        Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/brique_2.png")));
                         g.drawImage(img, (int) position_x, (int) position_y, (int) stepx, (int) stepy, this);
-
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
                 } else {
                     try {
-                        Image img = ImageIO.read(new File("./images/grass.png"));
+                        Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/grass.png")));
                         g.drawImage(img, (int) position_x, (int) position_y, (int) stepx, (int) stepy, this);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -120,7 +107,6 @@ public class PanelBomberman extends JPanel {
             }
             position_x += stepx;
         }
-
 
         for (int i = 0; i < listInfoItems.size(); i++) {
             dessine_Items(g, listInfoItems.get(i));
@@ -167,9 +153,9 @@ public class PanelBomberman extends JPanel {
 
         try {
             if (infoAgent.getType() == 'R') {
-                img = ImageIO.read(new File("./images/" + infoAgent.getType() + direction + this.cpt % 2 + ".png"));
+                img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/" + infoAgent.getType() + direction + this.cpt % 2 + ".png")));
             } else {
-                img = ImageIO.read(new File("./images/" + infoAgent.getType() + direction + this.cpt % 3 + ".png"));
+                img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/" + infoAgent.getType() + direction + this.cpt % 3 + ".png")));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -292,7 +278,7 @@ public class PanelBomberman extends JPanel {
         if (bomb.getStateBomb() == StateBomb.Step0) {
 
             try {
-                Image img = ImageIO.read(new File("./images/Bomb_0.png"));
+                Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/Bomb_0.png")));
                 g.drawImage(img, (int) pos_x, (int) pos_y, (int) stepx, (int) stepy, this);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -300,7 +286,7 @@ public class PanelBomberman extends JPanel {
         } else if (bomb.getStateBomb() == StateBomb.Step1) {
 
             try {
-                Image img = ImageIO.read(new File("./images/Bomb_0.png"));
+                Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/Bomb_0.png")));
                 g.drawImage(img, (int) pos_x, (int) pos_y, (int) stepx, (int) stepy, this);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -308,7 +294,7 @@ public class PanelBomberman extends JPanel {
         } else if (bomb.getStateBomb() == StateBomb.Step2) {
 
             try {
-                Image img = ImageIO.read(new File("./images/Bomb_1_jaune.png"));
+                Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/Bomb_1_jaune.png")));
                 g.drawImage(img, (int) pos_x, (int) pos_y, (int) stepx, (int) stepy, this);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -316,7 +302,7 @@ public class PanelBomberman extends JPanel {
         } else if (bomb.getStateBomb() == StateBomb.Step3) {
 
             try {
-                Image img = ImageIO.read(new File("./images/Bomb_2_rouge.png"));
+                Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/Bomb_2_rouge.png")));
                 g.drawImage(img, (int) pos_x, (int) pos_y, (int) stepx, (int) stepy, this);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -325,7 +311,7 @@ public class PanelBomberman extends JPanel {
         } else if (bomb.getStateBomb() == StateBomb.Boom) {
 
             try {
-                Image img = ImageIO.read(new File("./images/Range_CENTRE.png"));
+                Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/Range_CENTRE.png")));
                 g.drawImage(img, (int) pos_x, (int) pos_y, (int) stepx, (int) stepy, this);
             } catch (IOException e) {
                 e.printStackTrace();

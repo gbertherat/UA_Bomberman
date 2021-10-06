@@ -16,7 +16,7 @@ public abstract class Frame implements Observer {
 
     public void init(int width, int height, int yoffset){
         jFrame = new JFrame();
-        jFrame.setTitle("model");
+        jFrame.setTitle("Game");
         jFrame.setSize(new Dimension(width, height));
         Dimension windowSize = jFrame.getSize();
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -28,7 +28,7 @@ public abstract class Frame implements Observer {
 
     public Image getImage(String foldername, String imagename){
         try {
-            return ImageIO.read(Objects.requireNonNull(getClass().getResource(foldername + "/" + imagename)));
+            return ImageIO.read(Objects.requireNonNull(getClass().getResource("../" + foldername + "/" + imagename)));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -22,10 +22,10 @@ public class ViewCommand extends Frame {
 
     public ViewCommand(AbstractController controller){
         this.controller = controller;
-        playButton = new JButton(new ImageIcon(getImage("../icons", "icon_play.png")));
-        stepButton = new JButton(new ImageIcon(getImage("../icons", "icon_step.png")));
-        pauseButton = new JButton(new ImageIcon(getImage("../icons", "icon_pause.png")));
-        restartButton = new JButton(new ImageIcon(getImage("../icons", "icon_restart.png")));
+        playButton = new JButton(new ImageIcon(getImage("icons", "icon_play.png")));
+        stepButton = new JButton(new ImageIcon(getImage("icons", "icon_step.png")));
+        pauseButton = new JButton(new ImageIcon(getImage("icons", "icon_pause.png")));
+        restartButton = new JButton(new ImageIcon(getImage("icons", "icon_restart.png")));
         turnLabel = new JLabel("Tour: 0", JLabel.CENTER);
     }
 
