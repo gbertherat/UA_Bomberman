@@ -3,6 +3,8 @@ package agent;
 import model.BombermanGame;
 import utils.*;
 
+import java.util.ArrayList;
+
 public abstract class Character {
     private InfoAgent info;
 
@@ -21,11 +23,19 @@ public abstract class Character {
     public boolean isLegalMove(int xdir, int ydir, BombermanGame game) {
         boolean[][] walls = game.getMap().get_walls();
         boolean[][] breakableWalls = game.getBreakableWalls();
+        ArrayList<InfoBomb> bombList = game.getBombList();
 
         int nextx = info.getX() + xdir;
         int nexty = info.getY() + ydir;
 
-        if(nextx >= 0 && nexty >= 0 && nextx < walls.length && nexty < walls[nextx].length) {
+        for(InfoBomb bomb : bombList){
+            if(bomb.getX() == nextx && bomb.getY() == nexty){
+                return false;
+            }
+        }
+
+        if(nextx >= 0 && nexty >= 0
+                && nextx < walls.length && nexty < walls[nextx].length) {
             return !(walls[nextx][nexty] || breakableWalls[nextx][nexty]);
         } else {
             return false;

@@ -18,7 +18,7 @@ public class ControllerBombermanGame extends AbstractController{
     public ControllerBombermanGame(String mapName){
         map = new InputMap(mapName + ".lay");
 
-        bg = new BombermanGame(128,1000, map);
+        bg = new BombermanGame(1024,500, map);
         vbg = new ViewBombermanGame();
         vc = new ViewCommand(this);
 
@@ -27,8 +27,8 @@ public class ControllerBombermanGame extends AbstractController{
         bg.init();
 
         vbg.setMap(map);
-        vbg.init(map.get_walls().length*64,map.get_walls()[0].length*64,-350);
-        vc.init(700,300,350);
+        vbg.init(map.get_walls().length*48,map.get_walls()[0].length*48,-100);
+        vc.init(600,300,300);
         vc.setEtat(new EtatCreated(vc));
     }
 
