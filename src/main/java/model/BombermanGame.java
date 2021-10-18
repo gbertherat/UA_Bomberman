@@ -2,10 +2,7 @@ package model;
 
 import agent.*;
 import agent.Character;
-import utils.AgentAction;
-import utils.InfoAgent;
-import utils.InfoBomb;
-import utils.InfoItem;
+import utils.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -80,11 +77,59 @@ public class BombermanGame extends Game {
         notifyObservers();
     }
 
+    public void checkWallsInBombRange(int x, int y, int range){
+        for(int i = -range; i < range+1; i++){
+            breakableWalls[x+i][y] = false;
+            breakableWalls[x][y+i] = false;
+        }
+    }
+
+    public void checkCharactersInBombRange(int x, int y, int range){
+        ArrayList<Character> newCharacterList = new ArrayList<>();
+        System.out.println(characterList.size());
+        for(Character agent : characterList){
+            InfoAgent infoAgent = agent.getInfo();
+            boolean isAlive = true;
+            int i = -range;
+            while(i < range+1 && isAlive){
+                if ((infoAgent.getX() == x + i && infoAgent.getY() == y)
+                        || infoAgent.getX() == x && infoAgent.getY() == y + i) {
+                    isAlive = false;
+                }
+                i++;
+            }
+            if(isAlive && !newCharacterList.contains(agent)){
+                newCharacterList.add(agent);
+            }
+        }
+        characterList = newCharacterList;
+    }
+
+    public void checkBombs(){
+        ArrayList<InfoBomb> newBombList = new ArrayList<>();
+        for(InfoBomb bomb : bombList){
+            if(bomb.getStateBomb() == StateBomb.Boom){
+                continue;
+            }
+            StateBomb bombState = bomb.getStateBomb();
+            bomb.setStateBomb(bombState.next());
+            if(bombState.next() == StateBomb.Boom){
+                checkWallsInBombRange(bomb.getX(), bomb.getY(), bomb.getRange());
+                checkCharactersInBombRange(bomb.getX(), bomb.getY(), bomb.getRange());
+            }
+            newBombList.add(bomb);
+        }
+        bombList = newBombList;
+    }
+
     @Override
     public void takeTurn() {
         Random random = new Random();
+        checkBombs();
+
         for(Character character : characterList){
             AgentAction randomAction = AgentAction.values()[random.nextInt(AgentAction.values().length)];
+            character.getInfo().setAgentAction(randomAction);
             if (randomAction == AgentAction.PUT_BOMB) {
                 if(bombList.stream().noneMatch(e -> e.getX() == character.getInfo().getX()
                                                 && e.getY() == character.getInfo().getY())){
@@ -93,6 +138,7 @@ public class BombermanGame extends Game {
             } else {
                 character.move(randomAction, this);
             }
+
         }
         setChanged();
         notifyObservers();
