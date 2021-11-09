@@ -1,16 +1,13 @@
 package controller;
 
 import model.BombermanGame;
-import model.Game;
 import model.InputMap;
-import view.PanelBomberman;
 import view.ViewBombermanGame;
 import view.ViewCommand;
 import view.strategy.EtatCreated;
 
 public class ControllerBombermanGame extends AbstractController{
     private BombermanGame bg;
-    private PanelBomberman pb;
     private ViewBombermanGame vbg;
     private ViewCommand vc;
     private InputMap map;

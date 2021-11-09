@@ -21,7 +21,7 @@ public class BombermanGame extends Game {
         this.characterList = new ArrayList<>();
         this.bombList = new ArrayList<>();
         this.itemList = new ArrayList<>();
-        this.breakableWalls = map.getStart_breakable_walls();
+        this.breakableWalls = Arrays.stream(map.getStart_breakable_walls()).map(boolean[]::clone).toArray($ -> map.getStart_breakable_walls().clone());
     }
 
     public InputMap getMap() {
@@ -67,14 +67,14 @@ public class BombermanGame extends Game {
 
     @Override
     public void restart() {
-        setTurn(0);
+        super.restart();
         this.characterList = new ArrayList<>();
         this.bombList = new ArrayList<>();
         this.itemList = new ArrayList<>();
         this.breakableWalls = map.getStart_breakable_walls();
         init();
         setChanged();
-        notifyObservers();
+        notifyObservers(getTurn());
     }
 
     public void checkWallsInBombRange(int x, int y, int range){
@@ -86,7 +86,6 @@ public class BombermanGame extends Game {
 
     public void checkCharactersInBombRange(int x, int y, int range){
         ArrayList<Character> newCharacterList = new ArrayList<>();
-        System.out.println(characterList.size());
         for(Character agent : characterList){
             InfoAgent infoAgent = agent.getInfo();
             boolean isAlive = true;
@@ -140,8 +139,6 @@ public class BombermanGame extends Game {
             }
 
         }
-        setChanged();
-        notifyObservers();
     }
 
     @Override

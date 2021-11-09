@@ -26,7 +26,7 @@ public class ViewCommand extends Frame {
         stepButton = new JButton(new ImageIcon(getImage("icons", "icon_step.png")));
         pauseButton = new JButton(new ImageIcon(getImage("icons", "icon_pause.png")));
         restartButton = new JButton(new ImageIcon(getImage("icons", "icon_restart.png")));
-        turnLabel = new JLabel("Tour: 0", JLabel.CENTER);
+        turnLabel = new JLabel("Tour: 1", JLabel.CENTER);
     }
 
     public void setEtat(CommandStrategy etat) {

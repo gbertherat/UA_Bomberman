@@ -31,7 +31,7 @@ public abstract class Game extends Observable implements Runnable {
     }
 
     public void init(){
-        turn = 0;
+        turn = 1;
     }
 
     public void step(){
@@ -72,7 +72,8 @@ public abstract class Game extends Observable implements Runnable {
     }
 
     public void restart(){
-        turn = 0;
+        this.isRunning = false;
+        setTurn(1);
     }
 
     abstract void takeTurn();
