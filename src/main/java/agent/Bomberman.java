@@ -6,8 +6,8 @@ import utils.InfoAgent;
 
 import java.util.Random;
 
-public class AgentBomberman extends Character {
-    public AgentBomberman(int x, int y) {
+public class Bomberman extends Character {
+    public Bomberman(int x, int y) {
         super(new InfoAgent(x, y,
                 AgentAction.STOP,
                 'B',

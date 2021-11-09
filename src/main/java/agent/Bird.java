@@ -23,14 +23,12 @@ public class Bird extends Character{
 
     public boolean isBombermanInRange(BombermanGame game){
         InfoAgent birdInfo = super.getInfo();
-        for(Character agent : game.getCharacterList()){
+        for (Character agent : game.getCharacterMap().get('B')) {
             InfoAgent agentInfo = agent.getInfo();
-            if(agentInfo.getType() == 'B'){
-                if(Math.sqrt(
-                        Math.pow(birdInfo.getX() - agentInfo.getX(), 2) + Math.pow(birdInfo.getY() - agentInfo.getY(), 2)) <= this.radius){
-                    getInfo().setActive(true);
-                    return true;
-                }
+            if (Math.sqrt(
+                    Math.pow(birdInfo.getX() - agentInfo.getX(), 2) + Math.pow(birdInfo.getY() - agentInfo.getY(), 2)) <= this.radius) {
+                getInfo().setActive(true);
+                return true;
             }
         }
         return false;

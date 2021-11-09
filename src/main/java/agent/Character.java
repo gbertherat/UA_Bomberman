@@ -23,7 +23,6 @@ public abstract class Character {
     public boolean isLegalMove(int xdir, int ydir, BombermanGame game) {
         boolean[][] walls = game.getMap().get_walls();
         boolean[][] breakableWalls = game.getBreakableWalls();
-        ArrayList<Character> agentList = game.getCharacterList();
         ArrayList<InfoBomb> bombList = game.getBombList();
 
         int nextx = info.getX() + xdir;
@@ -35,10 +34,12 @@ public abstract class Character {
             }
         }
 
-        for(Character agent : agentList){
-            InfoAgent info = agent.getInfo();
-            if(info.getX() == nextx && info.getY() == nexty){
-                return false;
+        for(char c : game.getCharacterMap().keySet()){
+            for(Character agent : game.getCharacterMap().get(c)){
+                InfoAgent info = agent.getInfo();
+                if(info.getX() == nextx && info.getY() == nexty){
+                    return false;
+                }
             }
         }
 

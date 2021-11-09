@@ -52,7 +52,9 @@ public class ViewBombermanGame extends Frame{
     public void update(Observable o, Object arg) {
         BombermanGame game = (BombermanGame) o;
         ArrayList<InfoAgent> infoAgents = new ArrayList<>();
-        game.getCharacterList().forEach(e -> infoAgents.add(e.getInfo()));
+        for(char c : game.getCharacterMap().keySet()){
+            game.getCharacterMap().get(c).forEach(e -> infoAgents.add(e.getInfo()));
+        }
 
         mainPanel.updateInfoGame(game.getBreakableWalls(), infoAgents, game.getItemList(), game.getBombList());
         mainPanel.repaint();
