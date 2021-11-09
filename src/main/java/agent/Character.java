@@ -84,13 +84,13 @@ public abstract class Character {
 
     public void selectAction(BombermanGame game){
         if(getInfo().getTurnUntilNotInvincible() > 0){
-            getInfo().setTurnUntilNotInvincible(getInfo().getTurnUntilNotInvincible() - 1);
+            getInfo().decreaseTurnUntilNotInvincible(1);
         } else {
             getInfo().setInvincible(false);
         }
 
         if(getInfo().getTurnUntilNotSick() > 0){
-            getInfo().setTurnUntilNotSick(getInfo().getTurnUntilNotSick() - 1);
+            getInfo().decreaseTurnUntilNotSick(1);
         } else {
             getInfo().setSick(false);
         }

@@ -28,7 +28,7 @@ public class InfoAgent {
         this.isAlive = true;
         this.isActive = true;
 
-        this.bombRange = 10;
+        this.bombRange = 1;
         this.isInvincible = isInvincible;
         this.turnUntilNotInvincible = 10;
 
@@ -76,6 +76,17 @@ public class InfoAgent {
         this.bombRange = bombRange;
     }
 
+    public void increaseBombRangeBy(int range){
+        this.bombRange += range;
+    }
+
+    public void decreaseBombRange(int range){
+        this.bombRange -= range;
+        if(bombRange < 1){
+            bombRange = 1;
+        }
+    }
+
     public boolean isInvincible() {
         return isInvincible;
     }
@@ -92,6 +103,13 @@ public class InfoAgent {
         this.turnUntilNotInvincible = turnUntilNotInvincible;
     }
 
+    public void decreaseTurnUntilNotInvincible(int turn){
+        this.turnUntilNotInvincible -= turn;
+        if(this.turnUntilNotInvincible < 0){
+            this.turnUntilNotInvincible = 0;
+        }
+    }
+
     public boolean isSick() {
         return isSick;
     }
@@ -106,6 +124,13 @@ public class InfoAgent {
 
     public void setTurnUntilNotSick(int turnUntilNotSick) {
         this.turnUntilNotSick = turnUntilNotSick;
+    }
+
+    public void decreaseTurnUntilNotSick(int turn){
+        this.turnUntilNotSick -= turn;
+        if(this.turnUntilNotSick < 0){
+            this.turnUntilNotSick = 0;
+        }
     }
 
     public boolean isAlive() {

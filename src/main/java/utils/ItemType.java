@@ -6,14 +6,14 @@ public enum ItemType {
 	FIRE_UP{
 		@Override
 		public void applyItem(Character character) {
-			character.getInfo().setBombRange(character.getInfo().getBombRange() + 1);
+			character.getInfo().increaseBombRangeBy(1);
 		}
 	},
 	FIRE_DOWN{
 		@Override
 		public void applyItem(Character character) {
 			if(character.getInfo().getBombRange() > 1){
-				character.getInfo().setBombRange(character.getInfo().getBombRange() - 1);
+				character.getInfo().decreaseBombRange(1);
 			}
 		}
 	},
