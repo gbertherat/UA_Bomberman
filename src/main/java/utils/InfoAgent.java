@@ -8,6 +8,8 @@ public class InfoAgent {
     private ColorAgent color;
     private char type;
 
+    private boolean isAlive;
+    private boolean isActive;
     private boolean isInvincible;
     private boolean isSick;
 
@@ -18,10 +20,11 @@ public class InfoAgent {
         this.color = color;
         this.type = type;
 
+        this.isAlive = true;
+        this.isActive = true;
         this.isInvincible = isInvincible;
         this.isSick = isSick;
     }
-
 
     public int getX() {
         return x;
@@ -69,6 +72,22 @@ public class InfoAgent {
 
     public void setSick(boolean isSick) {
         this.isSick = isSick;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+    public void setAlive(boolean alive) {
+        isAlive = alive;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public AgentAction getAgentAction() {

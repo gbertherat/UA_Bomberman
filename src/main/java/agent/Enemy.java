@@ -8,7 +8,7 @@ public class Enemy extends Character{
     public Enemy(int x, int y) {
         super(new InfoAgent(x, y,
                 AgentAction.STOP,
-                'E',
+                'R',
                 ColorAgent.DEFAULT,
                 false,
                 false));

@@ -6,6 +6,7 @@ import utils.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.Random;
 
 public class BombermanGame extends Game {
@@ -50,15 +51,15 @@ public class BombermanGame extends Game {
         for(InfoAgent agent: map.getStart_agents()){
             switch(agent.getType()){
                 case 'B':
-                    characterList.add(new AgentBomberman(agent.getX(), agent.getY()));
+                    characterList.add(0, new AgentBomberman(agent.getX(), agent.getY()));
                     break;
                 case 'V':
                     characterList.add(new Bird(agent.getX(), agent.getY()));
                     break;
-                case 'R':
+                case 'E':
                     characterList.add(new Rajion(agent.getX(), agent.getY()));
                     break;
-                case 'E':
+                case 'R':
                     characterList.add(new Enemy(agent.getX(), agent.getY()));
                     break;
             }
@@ -71,7 +72,7 @@ public class BombermanGame extends Game {
         this.characterList = new ArrayList<>();
         this.bombList = new ArrayList<>();
         this.itemList = new ArrayList<>();
-        this.breakableWalls = map.getStart_breakable_walls();
+        this.breakableWalls = Arrays.stream(map.getStart_breakable_walls()).map(boolean[]::clone).toArray($ -> map.getStart_breakable_walls().clone());
         init();
         setChanged();
         notifyObservers(getTurn());
@@ -88,16 +89,15 @@ public class BombermanGame extends Game {
         ArrayList<Character> newCharacterList = new ArrayList<>();
         for(Character agent : characterList){
             InfoAgent infoAgent = agent.getInfo();
-            boolean isAlive = true;
             int i = -range;
-            while(i < range+1 && isAlive){
+            while(i < range+1 && infoAgent.isAlive()){
                 if ((infoAgent.getX() == x + i && infoAgent.getY() == y)
                         || infoAgent.getX() == x && infoAgent.getY() == y + i) {
-                    isAlive = false;
+                    infoAgent.setAlive(false);
                 }
                 i++;
             }
-            if(isAlive && !newCharacterList.contains(agent)){
+            if(infoAgent.isAlive() && !newCharacterList.contains(agent)){
                 newCharacterList.add(agent);
             }
         }
@@ -121,15 +121,41 @@ public class BombermanGame extends Game {
         bombList = newBombList;
     }
 
+    public void checkRajionOnBomberman(){
+        ArrayList<Character> newCharacterList = new ArrayList<>();
+        for(Character rajion: characterList){
+            if(rajion.getInfo().getType() == 'E'){
+                InfoAgent infoRajion = rajion.getInfo();
+
+                for(Character bomberman: characterList){
+                    if(bomberman.getInfo().getType() == 'B'){
+
+                        InfoAgent infoBomberman = bomberman.getInfo();
+                        if(infoRajion.getX() == infoBomberman.getX() && infoRajion.getY() == infoBomberman.getY()){
+                            infoBomberman.setAlive(false);
+                        }
+                    }
+                }
+            }
+        }
+        for(Character character : characterList){
+            if(character.getInfo().isAlive()){
+                newCharacterList.add(character);
+            }
+        }
+        characterList = newCharacterList;
+    }
+
     @Override
     public void takeTurn() {
         Random random = new Random();
         checkBombs();
+        checkRajionOnBomberman();
 
         for(Character character : characterList){
             AgentAction randomAction = AgentAction.values()[random.nextInt(AgentAction.values().length)];
             character.getInfo().setAgentAction(randomAction);
-            if (randomAction == AgentAction.PUT_BOMB) {
+            if (randomAction == AgentAction.PUT_BOMB && character.getInfo().isActive()) {
                 if(bombList.stream().noneMatch(e -> e.getX() == character.getInfo().getX()
                                                 && e.getY() == character.getInfo().getY())){
                     bombList.add(character.putBomb());
@@ -137,7 +163,6 @@ public class BombermanGame extends Game {
             } else {
                 character.move(randomAction, this);
             }
-
         }
     }
 
