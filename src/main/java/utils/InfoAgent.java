@@ -10,8 +10,13 @@ public class InfoAgent {
 
     private boolean isAlive;
     private boolean isActive;
+
+    private int bombRange;
     private boolean isInvincible;
+    private int turnUntilNotInvincible;
+
     private boolean isSick;
+    private int turnUntilNotSick;
 
     public InfoAgent(int x, int y, AgentAction agentAction, char type, ColorAgent color, boolean isInvincible, boolean isSick) {
         this.x = x;
@@ -22,8 +27,13 @@ public class InfoAgent {
 
         this.isAlive = true;
         this.isActive = true;
+
+        this.bombRange = 10;
         this.isInvincible = isInvincible;
+        this.turnUntilNotInvincible = 10;
+
         this.isSick = isSick;
+        this.turnUntilNotSick = 10;
     }
 
     public int getX() {
@@ -58,6 +68,14 @@ public class InfoAgent {
         this.type = type;
     }
 
+    public int getBombRange() {
+        return bombRange;
+    }
+
+    public void setBombRange(int bombRange) {
+        this.bombRange = bombRange;
+    }
+
     public boolean isInvincible() {
         return isInvincible;
     }
@@ -66,12 +84,28 @@ public class InfoAgent {
         this.isInvincible = isInvincible;
     }
 
+    public int getTurnUntilNotInvincible() {
+        return turnUntilNotInvincible;
+    }
+
+    public void setTurnUntilNotInvincible(int turnUntilNotInvincible) {
+        this.turnUntilNotInvincible = turnUntilNotInvincible;
+    }
+
     public boolean isSick() {
         return isSick;
     }
 
     public void setSick(boolean isSick) {
         this.isSick = isSick;
+    }
+
+    public int getTurnUntilNotSick() {
+        return turnUntilNotSick;
+    }
+
+    public void setTurnUntilNotSick(int turnUntilNotSick) {
+        this.turnUntilNotSick = turnUntilNotSick;
     }
 
     public boolean isAlive() {

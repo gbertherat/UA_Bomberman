@@ -81,10 +81,25 @@ public class BombermanGame extends Game {
         notifyObservers(getTurn());
     }
 
+    public void addRandomItem(int x, int y) {
+        Random random = new Random();
+
+        if(random.nextInt(3) == 1) {
+            ItemType randomItem = ItemType.values()[random.nextInt(ItemType.values().length)];
+            itemList.add(new InfoItem(x, y, randomItem));
+        }
+    }
+
     public void checkWallsInBombRange(int x, int y, int range){
         for(int i = -range; i < range+1; i++){
-            breakableWalls[x+i][y] = false;
-            breakableWalls[x][y+i] = false;
+            if(x+i > 0 && x+i < breakableWalls.length && y > 0 && y < breakableWalls[x+i].length && breakableWalls[x+i][y]) {
+                breakableWalls[x + i][y] = false;
+                addRandomItem(x + i, y);
+            }
+            if(y+i > 0 && y+i < breakableWalls[x].length && x > 0 && breakableWalls[x][y + i]){
+                breakableWalls[x][y + i] = false;
+                addRandomItem(x, y + i);
+            }
         }
     }
 
@@ -140,25 +155,31 @@ public class BombermanGame extends Game {
         }
     }
 
+    public void checkCharactersOnItems(){
+        for(char c : characterMap.keySet()){
+            for(Character character: characterMap.get(c)){
+                ListIterator<InfoItem> ite = itemList.listIterator();
+                while(ite.hasNext()){
+                    InfoItem itemInfo = ite.next();
+                    if(itemInfo.getX() == character.getInfo().getX() && itemInfo.getY() == character.getInfo().getY()){
+                        itemInfo.getType().applyItem(character);
+                        ite.remove();
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public void takeTurn() {
-        Random random = new Random();
         checkBombs();
         checkRajionOnBomberman();
         removeDeadCharacters();
+        checkCharactersOnItems();
 
         for(char c : characterMap.keySet()) {
             for (Character character : characterMap.get(c)) {
-                AgentAction randomAction = AgentAction.values()[random.nextInt(AgentAction.values().length)];
-                character.getInfo().setAgentAction(randomAction);
-                if (randomAction == AgentAction.PUT_BOMB && character.getInfo().isActive()) {
-                    if (bombList.stream().noneMatch(e -> e.getX() == character.getInfo().getX()
-                            && e.getY() == character.getInfo().getY())) {
-                        bombList.add(character.putBomb());
-                    }
-                } else {
-                    character.move(randomAction, this);
-                }
+                character.selectAction(this);
             }
         }
     }

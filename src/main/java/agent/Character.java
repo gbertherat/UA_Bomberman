@@ -4,6 +4,7 @@ import model.BombermanGame;
 import utils.*;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public abstract class Character {
     private InfoAgent info;
@@ -78,6 +79,33 @@ public abstract class Character {
     }
 
     public InfoBomb putBomb(){
-        return new InfoBomb(info.getX(), info.getY(), 1, StateBomb.Step0);
+        return new InfoBomb(info.getX(), info.getY(), info.getBombRange(), StateBomb.Step0);
+    }
+
+    public void selectAction(BombermanGame game){
+        if(getInfo().getTurnUntilNotInvincible() > 0){
+            getInfo().setTurnUntilNotInvincible(getInfo().getTurnUntilNotInvincible() - 1);
+        } else {
+            getInfo().setInvincible(false);
+        }
+
+        if(getInfo().getTurnUntilNotSick() > 0){
+            getInfo().setTurnUntilNotSick(getInfo().getTurnUntilNotSick() - 1);
+        } else {
+            getInfo().setSick(false);
+        }
+
+        Random random = new Random();
+
+        AgentAction randomAction = AgentAction.values()[random.nextInt(AgentAction.values().length)];
+        getInfo().setAgentAction(randomAction);
+        if (randomAction == AgentAction.PUT_BOMB && getInfo().isActive()) {
+            if (game.getBombList().stream().noneMatch(e -> e.getX() == getInfo().getX()
+                    && e.getY() == getInfo().getY())) {
+                game.getBombList().add(putBomb());
+            }
+        } else {
+            move(randomAction, game);
+        }
     }
 }
