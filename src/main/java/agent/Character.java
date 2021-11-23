@@ -154,7 +154,7 @@ public abstract class Character {
         }
     }
 
-    public void preventGoingIntoBombRange(ArrayList<AgentAction> possibilities){
+    public void preventGoingIntoBombRange(List<AgentAction> possibilities){
         if(!getInfo().isInvincible() && getDistOfNearestBomb() < 5 && possibilities.size() > 0) {
             InfoBomb nearestBomb = getNearestBomb();
             if(nearestBomb != null) {
@@ -177,12 +177,37 @@ public abstract class Character {
         }
     }
 
+    private InfoItem getNearestGoodItem(){
+        double minDistFromItem = 999;
+        InfoItem nearestItem = null;
+        for(InfoItem item : game.getItemList()){
+            double dist = Math.sqrt(Math.pow(item.getX() - this.getX(), 2) + Math.pow(item.getY() - this.getY(), 2));
+            if(dist < minDistFromItem){
+                minDistFromItem = dist;
+                nearestItem = item;
+            }
+        }
+        return nearestItem;
+    }
+
+    private void goForNearestGoodItem(List<AgentAction> possibilities){
+        InfoItem item = getNearestGoodItem();
+        if(item != null) {
+            int i = 0;
+            AgentAction action = null;
+            while(i < possibilities.size() && action == null){
+                i++;
+            }
+        }
+    }
+
     public AgentAction selectSmartAction(){
         ArrayList<AgentAction> possibilities = new ArrayList<>(Arrays.asList(AgentAction.values()));
 
         checkSurrounding(possibilities);
         runAwayFromBomb(possibilities);
         preventGoingIntoBombRange(possibilities);
+        goForNearestGoodItem(possibilities);
 
         if(possibilities.size() == 0){
             return AgentAction.STOP;
