@@ -85,7 +85,7 @@ public class BombermanGame extends Game {
     public void addRandomItem(int x, int y) {
         Random random = new Random();
 
-        if(random.nextInt(3) == 1) {
+        if(random.nextInt(2) == 1) {
             ItemType randomItem = ItemType.values()[random.nextInt(ItemType.values().length)];
             itemList.add(new InfoItem(x, y, randomItem));
         }

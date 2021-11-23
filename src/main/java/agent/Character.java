@@ -116,6 +116,12 @@ public abstract class Character {
         }
     }
 
+    public void placeBombsIfInvincible(Map<AgentAction, Integer> possibilities){
+        if(getInfo().isInvincible() && getInfo().getTurnUntilNotInvincible() > 3){
+            possibilities.put(AgentAction.PUT_BOMB, possibilities.get(AgentAction.PUT_BOMB)+1000);
+        }
+    }
+
     public ArrayList<InfoBomb> getNearestBombs(){
         return (ArrayList<InfoBomb>) game.getBombList().stream().filter(e -> Math.sqrt(Math.pow(e.getX() - this.getX(), 2) + Math.pow(e.getY() - this.getY(), 2)) <= 5).collect(Collectors.toList());
     }
@@ -159,26 +165,53 @@ public abstract class Character {
         }
     }
 
-    public AgentAction selectSmartAction() {
+    public ArrayList<InfoItem> getNearestItems(){
+        return (ArrayList<InfoItem>) game.getItemList().stream().filter(e -> Math.sqrt(Math.pow(e.getX() - this.getX(), 2) + Math.pow(e.getY() - this.getY(), 2)) <= 10).collect(Collectors.toList());
+    }
+
+    public void checkForItems(Map<AgentAction, Integer> possibilities){
+        for(InfoItem item : getNearestItems()){
+            int toAdd = 100 - (int) Math.sqrt(Math.pow(item.getX() - this.getX(), 2) + Math.pow(item.getY() - this.getY(), 2))*10;
+            if(!item.getType().isGood()){
+                toAdd = -toAdd;
+            }
+            if(item.getX() < this.getX()){
+                possibilities.put(AgentAction.MOVE_LEFT, possibilities.get(AgentAction.MOVE_LEFT)+toAdd);
+            } else if(item.getX() > this.getX()){
+                possibilities.put(AgentAction.MOVE_RIGHT, possibilities.get(AgentAction.MOVE_RIGHT)+toAdd);
+            }
+            if(item.getY() < this.getY()){
+                possibilities.put(AgentAction.MOVE_UP, possibilities.get(AgentAction.MOVE_UP)+toAdd);
+            } else if(item.getY() > this.getY()){
+                possibilities.put(AgentAction.MOVE_DOWN, possibilities.get(AgentAction.MOVE_DOWN)+toAdd);
+            }
+        }
+    }
+
+    public AgentAction selectSmartAction(){
         Map<AgentAction, Integer> weightedPossibilities = new HashMap<>();
         Arrays.stream(AgentAction.values()).forEach(e -> weightedPossibilities.put(e, 0));
 
         checkSurrounding(weightedPossibilities);
+        placeBombsIfInvincible(weightedPossibilities);
         runAwayFromBomb(weightedPossibilities);
+        checkForItems(weightedPossibilities);
 
         int maxWeight = -9999;
         List<AgentAction> smartActionList = new ArrayList<>();
-        for (AgentAction action : weightedPossibilities.keySet()) {
-            if (weightedPossibilities.get(action) > maxWeight) {
+        for(AgentAction action : weightedPossibilities.keySet()){
+            if(weightedPossibilities.get(action) > maxWeight){
                 smartActionList = new ArrayList<>();
                 smartActionList.add(action);
                 maxWeight = weightedPossibilities.get(action);
-            } else if (weightedPossibilities.get(action) == maxWeight) {
+            } else if(weightedPossibilities.get(action) == maxWeight){
                 smartActionList.add(action);
             }
         }
         Random random = new Random();
-        return smartActionList.get(random.nextInt(smartActionList.size()));
+        AgentAction action = smartActionList.get(random.nextInt(smartActionList.size()));
+        System.out.println(this + " could " + smartActionList + " and did " + action);
+        return action;
     }
 
     public void selectAction(){
