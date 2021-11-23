@@ -92,7 +92,7 @@ public abstract class Character {
     }
 
     public AgentAction placeLotOfBombsIfInvincible(BombermanGame game){
-        if(!this.getInfo().isInvincible()){
+        if(!this.getInfo().isInvincible() || this.getInfo().getTurnUntilNotInvincible() < 3){
             return null;
         }
         return game.getBombList().stream().noneMatch(e -> e.getX() == this.getX() && e.getY() == this.getY()) ? AgentAction.PUT_BOMB : null;
@@ -155,9 +155,9 @@ public abstract class Character {
             if(item.getType().isGood()) {
                 if (Math.sqrt(
                         Math.pow(item.getX() - this.getX(), 2) + Math.pow(item.getY() - this.getY(), 2)) <= 5) {
-                    if (item.getY() > this.getY() && !game.hasWallAtCoords(this.getX(), this.getY() - 1)) {
+                    if (item.getY() > this.getY() && !game.hasWallAtCoords(this.getX(), this.getY() + 1)) {
                         return AgentAction.MOVE_DOWN;
-                    } else if (item.getY() < this.getY() && !game.hasWallAtCoords(this.getX(), this.getY() + 1)) {
+                    } else if (item.getY() < this.getY() && !game.hasWallAtCoords(this.getX(), this.getY() - 1)) {
                         return AgentAction.MOVE_UP;
                     } else if (item.getX() > this.getX() && !game.hasWallAtCoords(this.getX() + 1, this.getY())) {
                         return AgentAction.MOVE_RIGHT;
@@ -188,6 +188,9 @@ public abstract class Character {
 
         Random random = new Random();
         action = AgentAction.values()[random.nextInt(AgentAction.values().length)];
+        if(action == AgentAction.STOP){
+            action = AgentAction.PUT_BOMB;
+        }
         return action;
     }
 
