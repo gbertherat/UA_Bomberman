@@ -95,7 +95,20 @@ public abstract class Character {
         if(!this.getInfo().isInvincible() || this.getInfo().getTurnUntilNotInvincible() < 3){
             return null;
         }
-        return game.getBombList().stream().noneMatch(e -> e.getX() == this.getX() && e.getY() == this.getY()) ? AgentAction.PUT_BOMB : null;
+        AgentAction action = game.getBombList().stream().noneMatch(e -> e.getX() == this.getX() && e.getY() == this.getY()) ? AgentAction.PUT_BOMB : null;
+
+        if(action == null) {
+            if (!game.hasWallAtCoords(this.getX(), this.getY() + 1)) {
+                return AgentAction.MOVE_DOWN;
+            } else if (!game.hasWallAtCoords(this.getX(), this.getY() - 1)) {
+                return AgentAction.MOVE_UP;
+            } else if (!game.hasWallAtCoords(this.getX() + 1, this.getY())) {
+                return AgentAction.MOVE_RIGHT;
+            } else {
+                return AgentAction.MOVE_LEFT;
+            }
+        }
+        return null;
     }
 
     public AgentAction runAwayFromBombs(BombermanGame game){
@@ -188,9 +201,6 @@ public abstract class Character {
 
         Random random = new Random();
         action = AgentAction.values()[random.nextInt(AgentAction.values().length)];
-        if(action == AgentAction.STOP){
-            action = AgentAction.PUT_BOMB;
-        }
         return action;
     }
 
