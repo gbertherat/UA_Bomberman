@@ -37,6 +37,7 @@ public class ControllerBombermanGame extends AbstractController{
         this.vbg.close();
         this.vbg.setMap(map);
         this.vbg.init(map.get_walls().length*48,map.get_walls()[0].length*48,-100);
+        vc.setEtat(new EtatCreated(vc));
     }
 
     @Override
