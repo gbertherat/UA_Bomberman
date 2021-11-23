@@ -105,7 +105,7 @@ public class InfoAgent {
 
     public void decreaseTurnUntilNotInvincible(int turn){
         this.turnUntilNotInvincible -= turn;
-        if(this.turnUntilNotInvincible < 0){
+        if(this.turnUntilNotInvincible <= 0){
             this.turnUntilNotInvincible = 0;
             setInvincible(false);
         }
@@ -129,7 +129,7 @@ public class InfoAgent {
 
     public void decreaseTurnUntilNotSick(int turn){
         this.turnUntilNotSick -= turn;
-        if(this.turnUntilNotSick < 0){
+        if(this.turnUntilNotSick <= 0){
             this.turnUntilNotSick = 0;
             setSick(false);
         }

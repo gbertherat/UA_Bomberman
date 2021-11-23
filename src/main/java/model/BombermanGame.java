@@ -91,6 +91,10 @@ public class BombermanGame extends Game {
         }
     }
 
+    public boolean hasWallAtCoords(int x, int y){
+        return getBreakableWalls()[x][y] || map.get_walls()[x][y];
+    }
+
     public void checkWallsInBombRange(int x, int y, int range){
         for(int i = -range; i < range+1; i++){
             if(x+i > 0 && x+i < breakableWalls.length && y > 0 && y < breakableWalls[x+i].length && breakableWalls[x+i][y]) {
@@ -112,7 +116,9 @@ public class BombermanGame extends Game {
                 while(i < range+1 && infoAgent.isAlive()){
                     if ((infoAgent.getX() == x + i && infoAgent.getY() == y)
                             || infoAgent.getX() == x && infoAgent.getY() == y + i) {
-                        infoAgent.setAlive(false);
+                        if(!infoAgent.isInvincible()) {
+                            infoAgent.setAlive(false);
+                        }
                     }
                     i++;
                 }
@@ -123,15 +129,15 @@ public class BombermanGame extends Game {
     public void checkBombs(){
         ArrayList<InfoBomb> newBombList = new ArrayList<>();
         for(InfoBomb bomb : bombList){
-            if(bomb.getStateBomb() == StateBomb.Boom){
+            if(bomb.getStateBomb() == StateBomb.Exploded){
                 continue;
             }
-            StateBomb bombState = bomb.getStateBomb();
-            bomb.setStateBomb(bombState.next());
-            if(bombState.next() == StateBomb.Boom){
+            if(bomb.getStateBomb() == StateBomb.Boom){
                 checkWallsInBombRange(bomb.getX(), bomb.getY(), bomb.getRange());
                 checkCharactersInBombRange(bomb.getX(), bomb.getY(), bomb.getRange());
             }
+            StateBomb bombState = bomb.getStateBomb();
+            bomb.setStateBomb(bombState.next());
             newBombList.add(bomb);
         }
         bombList = newBombList;
