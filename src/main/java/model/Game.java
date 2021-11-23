@@ -7,11 +7,14 @@ public abstract class Game extends Observable implements Runnable {
     private int maxturn;
     private int timeMs;
     private boolean isRunning;
+    private boolean isFinished;
+    private String gameOverReason;
     private Thread thread;
 
     public Game(int maxTurn, int timeMs) {
         this.maxturn = maxTurn;
         this.timeMs = timeMs;
+        this.isFinished = false;
     }
 
     public int getTurn(){
@@ -26,6 +29,22 @@ public abstract class Game extends Observable implements Runnable {
         return maxturn;
     }
 
+    public boolean isFinished() {
+        return isFinished;
+    }
+
+    public void setFinished(boolean finished) {
+        isFinished = finished;
+    }
+
+    public String getGameOverReason() {
+        return gameOverReason;
+    }
+
+    public void setGameOverReason(String gameOverReason) {
+        this.gameOverReason = gameOverReason;
+    }
+
     public void setTimeMs(int time){
         this.timeMs = time;
     }
@@ -38,12 +57,14 @@ public abstract class Game extends Observable implements Runnable {
         if(gameContinue()){
             turn++;
             takeTurn();
-        } else {
+        } else if(isFinished){
             isRunning = false;
-            gameOver();
+        } else {
+            gameOver("Turn limit reached!");
+            isRunning = false;
         }
         setChanged();
-        notifyObservers(turn);
+        notifyObservers(this);
     }
 
     public void pause(){
@@ -72,11 +93,12 @@ public abstract class Game extends Observable implements Runnable {
     }
 
     public void restart(){
+        this.isFinished = false;
         this.isRunning = false;
         setTurn(1);
     }
 
     abstract void takeTurn();
     abstract boolean gameContinue();
-    abstract void gameOver();
+    abstract void gameOver(String reason);
 }

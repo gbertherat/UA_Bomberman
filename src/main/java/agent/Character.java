@@ -85,14 +85,10 @@ public abstract class Character {
     public void selectAction(BombermanGame game){
         if(getInfo().getTurnUntilNotInvincible() > 0){
             getInfo().decreaseTurnUntilNotInvincible(1);
-        } else {
-            getInfo().setInvincible(false);
         }
 
         if(getInfo().getTurnUntilNotSick() > 0){
             getInfo().decreaseTurnUntilNotSick(1);
-        } else {
-            getInfo().setSick(false);
         }
 
         Random random = new Random();

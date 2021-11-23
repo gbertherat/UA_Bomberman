@@ -58,8 +58,8 @@ public class PanelBomberman extends JPanel {
         this.listInfoAgents = listInfoAgents;
         this.breakable_walls = breakable_walls;
 
-        this.listInfoItems = new ArrayList<InfoItem>();
-        this.listInfoBombs = new ArrayList<InfoBomb>();
+        this.listInfoItems = new ArrayList<>();
+        this.listInfoBombs = new ArrayList<>();
     }
 
     public void paint(Graphics g) {

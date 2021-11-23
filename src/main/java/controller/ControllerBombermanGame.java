@@ -1,13 +1,14 @@
 package controller;
 
 import model.BombermanGame;
+import model.Game;
 import model.InputMap;
 import view.ViewBombermanGame;
 import view.ViewCommand;
 import view.strategy.EtatCreated;
 
 public class ControllerBombermanGame extends AbstractController{
-    private BombermanGame bg;
+    private Game bg;
     private ViewBombermanGame vbg;
     private ViewCommand vc;
     private InputMap map;
@@ -56,6 +57,6 @@ public class ControllerBombermanGame extends AbstractController{
 
     @Override
     public void setSpeed(int speed) {
-        bg.setTimeMs(speed * 1000);
+        bg.setTimeMs(speed * 500);
     }
 }

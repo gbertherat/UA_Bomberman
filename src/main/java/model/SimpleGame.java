@@ -16,7 +16,7 @@ public class SimpleGame extends Game{
     }
 
     @Override
-    void gameOver() {
-        System.out.println("Le jeu est terminé!");
+    void gameOver(String reason) {
+        System.out.println("Le jeu est terminé!\n" + reason);
     }
 }

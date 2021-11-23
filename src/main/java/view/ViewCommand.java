@@ -1,8 +1,10 @@
 package view;
 
 import controller.AbstractController;
+import model.BombermanGame;
 import view.strategy.CommandStrategy;
 import view.strategy.EtatCreated;
+import view.strategy.EtatFinished;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,6 +19,7 @@ public class ViewCommand extends Frame {
     private JButton restartButton;
 
     private JLabel turnLabel;
+    private JLabel gameOverLabel;
     private CommandStrategy etat;
     private AbstractController controller;
 
@@ -27,6 +30,9 @@ public class ViewCommand extends Frame {
         pauseButton = new JButton(new ImageIcon(getImage("icons", "icon_pause.png")));
         restartButton = new JButton(new ImageIcon(getImage("icons", "icon_restart.png")));
         turnLabel = new JLabel("Tour: 1", JLabel.CENTER);
+        gameOverLabel = new JLabel("", JLabel.CENTER);
+        gameOverLabel.setForeground(Color.red);
+        gameOverLabel.setFont(new Font("Arial", Font.PLAIN, 18));
     }
 
     public void setEtat(CommandStrategy etat) {
@@ -103,7 +109,11 @@ public class ViewCommand extends Frame {
         slider.addChangeListener(e -> controller.setSpeed(slider.getValue()));
         bottomLeftPanel.add(slider);
 
-        bottomPanel.add(turnLabel);
+        JPanel bottomRightPanel = new JPanel(new GridLayout(2, 1));
+
+        bottomRightPanel.add(turnLabel);
+        bottomRightPanel.add(gameOverLabel);
+        bottomPanel.add(bottomRightPanel);
 
         frame.setVisible(true);
         setEtat(new EtatCreated(this));
@@ -113,8 +123,18 @@ public class ViewCommand extends Frame {
         this.turnLabel.setText("Tour: " + turnNo);
     }
 
+    public void setGameOverLabel(String label) {
+        this.gameOverLabel.setText(label);
+    }
+
     @Override
     public void update(Observable o, Object arg) {
-        setTurnLabel(String.valueOf(arg));
+        BombermanGame game = (BombermanGame) arg;
+        setTurnLabel(String.valueOf(game.getTurn()));
+        setGameOverLabel(game.getGameOverReason());
+
+        if(game.isFinished()){
+            setEtat(new EtatFinished(this));
+        }
     }
 }

@@ -77,8 +77,9 @@ public class BombermanGame extends Game {
         this.itemList = new ArrayList<>();
         this.breakableWalls = Arrays.stream(map.getStart_breakable_walls()).map(boolean[]::clone).toArray($ -> map.getStart_breakable_walls().clone());
         init();
+        setGameOverReason("");
         setChanged();
-        notifyObservers(getTurn());
+        notifyObservers(this);
     }
 
     public void addRandomItem(int x, int y) {
@@ -170,12 +171,27 @@ public class BombermanGame extends Game {
         }
     }
 
+    public void checkIfGameOver(){
+        ArrayList<Character> characters = new ArrayList<>();
+        characterMap.keySet().forEach(key -> characters.addAll(characterMap.get(key)));
+
+        if(characterMap.get('B').stream().noneMatch(c -> c.getInfo().isAlive())){
+            gameOver("You died!");
+        }
+        if(characters.size() == 1){
+            if(characters.get(0).getInfo().getType() == 'B'){
+                gameOver("You won!");
+            }
+        }
+    }
+
     @Override
     public void takeTurn() {
         checkBombs();
         checkRajionOnBomberman();
         removeDeadCharacters();
         checkCharactersOnItems();
+        checkIfGameOver();
 
         for(char c : characterMap.keySet()) {
             for (Character character : characterMap.get(c)) {
@@ -186,11 +202,14 @@ public class BombermanGame extends Game {
 
     @Override
     public boolean gameContinue() {
-        return getTurn() < getMaxturn();
+        return (getTurn() < getMaxturn()) && !isFinished();
     }
 
     @Override
-    public void gameOver() {
-
+    public void gameOver(String reason) {
+        setGameOverReason(reason);
+        setFinished(true);
+        setChanged();
+        notifyObservers(this);
     }
 }

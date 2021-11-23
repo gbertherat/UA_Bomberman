@@ -1,11 +1,8 @@
 package view;
 
 import model.BombermanGame;
-import model.Game;
 import model.InputMap;
 import utils.InfoAgent;
-import utils.InfoBomb;
-import utils.InfoItem;
 
 import javax.swing.*;
 import java.util.ArrayList;
