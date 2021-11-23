@@ -128,93 +128,12 @@ public abstract class Character {
         }
     }
 
-    public void runAwayFromBomb(List<AgentAction> possibilities){
-        if(!getInfo().isInvincible() && getDistOfNearestBomb() < 5 && possibilities.size() > 0) {
-            InfoBomb bomb = getNearestBomb();
-            if(bomb != null) {
-                possibilities.remove(AgentAction.STOP);
-                possibilities.remove(AgentAction.PUT_BOMB);
-                if (bomb.getX() == this.getX()) {
-                    if (!isLegalMove(0, -1)) {
-                        possibilities.remove(AgentAction.MOVE_UP);
-                    }
-                    if (!isLegalMove(0, 1)) {
-                        possibilities.remove(AgentAction.MOVE_DOWN);
-                    }
-                }
-                if (bomb.getY() == this.getY()) {
-                    if (!isLegalMove(-1, 0)) {
-                        possibilities.remove(AgentAction.MOVE_LEFT);
-                    }
-                    if (!isLegalMove(1, 0)) {
-                        possibilities.remove(AgentAction.MOVE_RIGHT);
-                    }
-                }
-            }
-        }
-    }
-
-    public void preventGoingIntoBombRange(List<AgentAction> possibilities){
-        if(!getInfo().isInvincible() && getDistOfNearestBomb() < 5 && possibilities.size() > 0) {
-            InfoBomb nearestBomb = getNearestBomb();
-            if(nearestBomb != null) {
-                ArrayList<AgentAction> updatedPossibilities = new ArrayList<>(possibilities);
-                for (AgentAction action : updatedPossibilities) {
-                    if (action == AgentAction.MOVE_UP && nearestBomb.getY() < this.getY()){
-                        possibilities.remove(AgentAction.MOVE_UP);
-                    }
-                    else if(action == AgentAction.MOVE_DOWN && nearestBomb.getY() > this.getY()){
-                        possibilities.remove(AgentAction.MOVE_DOWN);
-                    }
-                    else if(action == AgentAction.MOVE_LEFT && nearestBomb.getX() < this.getX()){
-                        possibilities.remove(AgentAction.MOVE_LEFT);
-                    }
-                    else if(action == AgentAction.MOVE_RIGHT && nearestBomb.getX() > this.getX()){
-                        possibilities.remove(AgentAction.MOVE_RIGHT);
-                    }
-                }
-            }
-        }
-    }
-
-    private InfoItem getNearestGoodItem(){
-        double minDistFromItem = 999;
-        InfoItem nearestItem = null;
-        for(InfoItem item : game.getItemList()){
-            double dist = Math.sqrt(Math.pow(item.getX() - this.getX(), 2) + Math.pow(item.getY() - this.getY(), 2));
-            if(dist < minDistFromItem){
-                minDistFromItem = dist;
-                nearestItem = item;
-            }
-        }
-        return nearestItem;
-    }
-
-    private void goForNearestGoodItem(List<AgentAction> possibilities){
-        InfoItem item = getNearestGoodItem();
-        if(item != null) {
-            int i = 0;
-            AgentAction action = null;
-            while(i < possibilities.size() && action == null){
-                i++;
-            }
-        }
-    }
-
     public AgentAction selectSmartAction(){
-        ArrayList<AgentAction> possibilities = new ArrayList<>(Arrays.asList(AgentAction.values()));
+        Map<AgentAction, Integer> weightedPossibilities = new HashMap<>();
+        Arrays.stream(AgentAction.values()).forEach(e -> weightedPossibilities.put(e, 0));
 
-        checkSurrounding(possibilities);
-        runAwayFromBomb(possibilities);
-        preventGoingIntoBombRange(possibilities);
-        goForNearestGoodItem(possibilities);
-
-        if(possibilities.size() == 0){
-            return AgentAction.STOP;
-        }
-
-        Random random = new Random();
-        return possibilities.get(random.nextInt(possibilities.size()));
+        System.out.println(weightedPossibilities);
+        return AgentAction.STOP;
     }
 
     public void selectAction(){
