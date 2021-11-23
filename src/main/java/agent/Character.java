@@ -6,6 +6,7 @@ import sun.management.Agent;
 import utils.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class Character {
     private InfoAgent info;
@@ -97,43 +98,87 @@ public abstract class Character {
         return new InfoBomb(info.getX(), info.getY(), info.getBombRange(), StateBomb.Step0);
     }
 
-    public double getDistOfNearestBomb(){
-        double minDist = 999;
-        for(InfoBomb bomb : game.getBombList()){
-            double dist = Math.sqrt(Math.pow(bomb.getX() - this.getX(), 2) + Math.pow(bomb.getY() - this.getY(), 2));
-            if(dist < minDist){
-                minDist = dist;
-            }
-        }
-        return minDist;
-    }
-
-    public InfoBomb getNearestBomb(){
-        Optional<InfoBomb> bomb = game.getBombList().stream().filter(e -> Math.sqrt(Math.pow(e.getX() - this.getX(), 2) + Math.pow(e.getY() - this.getY(), 2)) == getDistOfNearestBomb()).findAny();
-        return bomb.orElse(null);
-    }
-
-    public void checkSurrounding(List<AgentAction> possibilities){
+    public void checkSurrounding(Map<AgentAction, Integer> possibilities){
         if(!isLegalMove(0,-1)){
-            possibilities.remove(AgentAction.MOVE_UP);
+            possibilities.put(AgentAction.MOVE_UP, possibilities.get(AgentAction.MOVE_UP)-9999);
         }
         if(!isLegalMove(0,1)){
-            possibilities.remove(AgentAction.MOVE_DOWN);
+            possibilities.put(AgentAction.MOVE_DOWN, possibilities.get(AgentAction.MOVE_DOWN)-9999);
         }
         if(!isLegalMove(-1,0)){
-            possibilities.remove(AgentAction.MOVE_LEFT);
+            possibilities.put(AgentAction.MOVE_LEFT, possibilities.get(AgentAction.MOVE_LEFT)-9999);
         }
         if(!isLegalMove(1,0)){
-            possibilities.remove(AgentAction.MOVE_RIGHT);
+            possibilities.put(AgentAction.MOVE_RIGHT, possibilities.get(AgentAction.MOVE_RIGHT)-9999);
+        }
+        if(game.getBombList().stream().anyMatch(e -> e.getX() == this.getX() && e.getY() == this.getY())){
+            possibilities.put(AgentAction.PUT_BOMB, possibilities.get(AgentAction.PUT_BOMB)-9999);
         }
     }
 
-    public AgentAction selectSmartAction(){
+    public ArrayList<InfoBomb> getNearestBombs(){
+        return (ArrayList<InfoBomb>) game.getBombList().stream().filter(e -> Math.sqrt(Math.pow(e.getX() - this.getX(), 2) + Math.pow(e.getY() - this.getY(), 2)) <= 5).collect(Collectors.toList());
+    }
+
+    public void runAwayFromBomb(Map<AgentAction, Integer> possibilities){
+        if(!getInfo().isInvincible() && possibilities.size() > 0) {
+            for(InfoBomb bomb : getNearestBombs()){
+                possibilities.put(AgentAction.STOP, possibilities.get(AgentAction.STOP)-1000);
+                possibilities.put(AgentAction.PUT_BOMB, possibilities.get(AgentAction.PUT_BOMB)-100);
+                if(bomb.getX() == this.getX()){
+                    if(bomb.getY() > this.getY()){
+                        possibilities.put(AgentAction.MOVE_UP, possibilities.get(AgentAction.MOVE_UP)+50);
+                    } else if(bomb.getY() < this.getY()){
+                        possibilities.put(AgentAction.MOVE_DOWN, possibilities.get(AgentAction.MOVE_DOWN)+50);
+                    }
+                    possibilities.put(AgentAction.MOVE_RIGHT, possibilities.get(AgentAction.MOVE_RIGHT)+100);
+                    possibilities.put(AgentAction.MOVE_LEFT, possibilities.get(AgentAction.MOVE_LEFT)+100);
+                }
+                if(bomb.getY() == this.getY()){
+                    if(bomb.getX() > this.getX()){
+                        possibilities.put(AgentAction.MOVE_LEFT, possibilities.get(AgentAction.MOVE_LEFT)+50);
+                    }
+                    else if(bomb.getX() < this.getX()){
+                        possibilities.put(AgentAction.MOVE_RIGHT, possibilities.get(AgentAction.MOVE_RIGHT)+50);
+                    }
+                    possibilities.put(AgentAction.MOVE_UP, possibilities.get(AgentAction.MOVE_UP)+100);
+                    possibilities.put(AgentAction.MOVE_DOWN, possibilities.get(AgentAction.MOVE_DOWN)+100);
+                }
+                if(bomb.getX() > this.getX()){
+                    possibilities.put(AgentAction.MOVE_LEFT, possibilities.get(AgentAction.MOVE_LEFT)+50);
+                }
+                else if(bomb.getX() < this.getX()){
+                    possibilities.put(AgentAction.MOVE_RIGHT, possibilities.get(AgentAction.MOVE_RIGHT)+50);
+                }
+                if(bomb.getY() > this.getY()){
+                    possibilities.put(AgentAction.MOVE_UP, possibilities.get(AgentAction.MOVE_UP)+50);
+                } else if(bomb.getY() < this.getY()){
+                    possibilities.put(AgentAction.MOVE_DOWN, possibilities.get(AgentAction.MOVE_DOWN)+50);
+                }
+            }
+        }
+    }
+
+    public AgentAction selectSmartAction() {
         Map<AgentAction, Integer> weightedPossibilities = new HashMap<>();
         Arrays.stream(AgentAction.values()).forEach(e -> weightedPossibilities.put(e, 0));
 
-        System.out.println(weightedPossibilities);
-        return AgentAction.STOP;
+        checkSurrounding(weightedPossibilities);
+        runAwayFromBomb(weightedPossibilities);
+
+        int maxWeight = -9999;
+        List<AgentAction> smartActionList = new ArrayList<>();
+        for (AgentAction action : weightedPossibilities.keySet()) {
+            if (weightedPossibilities.get(action) > maxWeight) {
+                smartActionList = new ArrayList<>();
+                smartActionList.add(action);
+                maxWeight = weightedPossibilities.get(action);
+            } else if (weightedPossibilities.get(action) == maxWeight) {
+                smartActionList.add(action);
+            }
+        }
+        Random random = new Random();
+        return smartActionList.get(random.nextInt(smartActionList.size()));
     }
 
     public void selectAction(){
