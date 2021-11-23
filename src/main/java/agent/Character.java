@@ -1,17 +1,23 @@
 package agent;
 
 import model.BombermanGame;
+import model.Game;
+import sun.management.Agent;
 import utils.*;
 
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 public abstract class Character {
     private InfoAgent info;
+    private BombermanGame game;
 
-    public Character(InfoAgent info){
+    public Character(InfoAgent info, BombermanGame game){
         this.info = info;
+        this.game = game;
+    }
+
+    public BombermanGame getGame() {
+        return game;
     }
 
     public InfoAgent getInfo() {
@@ -30,7 +36,7 @@ public abstract class Character {
         return info.getY();
     }
 
-    public boolean isLegalMove(int xdir, int ydir, BombermanGame game) {
+    public boolean isLegalMove(int xdir, int ydir) {
         boolean[][] walls = game.getMap().get_walls();
         boolean[][] breakableWalls = game.getBreakableWalls();
         ArrayList<InfoBomb> bombList = game.getBombList();
@@ -79,7 +85,7 @@ public abstract class Character {
                 break;
         }
 
-        if (isLegalMove(xdir, ydir, game)) {
+        if (isLegalMove(xdir, ydir)) {
             this.info.setX(info.getX() + xdir);
             this.info.setY(info.getY() + ydir);
         } else {
@@ -91,120 +97,102 @@ public abstract class Character {
         return new InfoBomb(info.getX(), info.getY(), info.getBombRange(), StateBomb.Step0);
     }
 
-    public AgentAction placeLotOfBombsIfInvincible(BombermanGame game){
-        if(!this.getInfo().isInvincible() || this.getInfo().getTurnUntilNotInvincible() < 3){
-            return null;
-        }
-        AgentAction action = game.getBombList().stream().noneMatch(e -> e.getX() == this.getX() && e.getY() == this.getY()) ? AgentAction.PUT_BOMB : null;
-
-        if(action == null) {
-            if (!game.hasWallAtCoords(this.getX(), this.getY() + 1)) {
-                return AgentAction.MOVE_DOWN;
-            } else if (!game.hasWallAtCoords(this.getX(), this.getY() - 1)) {
-                return AgentAction.MOVE_UP;
-            } else if (!game.hasWallAtCoords(this.getX() + 1, this.getY())) {
-                return AgentAction.MOVE_RIGHT;
-            } else {
-                return AgentAction.MOVE_LEFT;
+    public double getDistOfNearestBomb(){
+        double minDist = 999;
+        for(InfoBomb bomb : game.getBombList()){
+            double dist = Math.sqrt(Math.pow(bomb.getX() - this.getX(), 2) + Math.pow(bomb.getY() - this.getY(), 2));
+            if(dist < minDist){
+                minDist = dist;
             }
         }
-        return null;
+        return minDist;
     }
 
-    public AgentAction runAwayFromBombs(BombermanGame game){
-        if(this.getInfo().isInvincible()){
-            return null;
-        }
-
-        if(game.getBombList().size() == 0){
-            return null;
-        }
-        ArrayList<AgentAction> possibilities = new ArrayList<>();
-        ArrayList<Integer> blockedX = new ArrayList<>();
-        ArrayList<Integer> blockedY = new ArrayList<>();
-        game.getBombList().forEach(e -> blockedX.add(e.getX()));
-        game.getBombList().forEach(e -> blockedY.add(e.getY()));
-
-        if(!blockedX.contains(this.getX()+1) && !blockedY.contains(this.getY()) && !game.hasWallAtCoords(this.getX()+1, this.getY())){
-            possibilities.add(AgentAction.MOVE_RIGHT);
-        }
-        if(!blockedX.contains(this.getX()-1) && !blockedY.contains(this.getY()) && !game.hasWallAtCoords(this.getX()-1, this.getY())){
-            possibilities.add(AgentAction.MOVE_LEFT);
-        }
-        if(!blockedX.contains(this.getX()) && !blockedY.contains(this.getY()+1) && !game.hasWallAtCoords(this.getX(), this.getY()+1)){
-            possibilities.add(AgentAction.MOVE_DOWN);
-        }
-        if(!blockedX.contains(this.getX()) && !blockedY.contains(this.getY()-1) && !game.hasWallAtCoords(this.getX(), this.getY()-1)){
-            possibilities.add(AgentAction.MOVE_UP);
-        }
-        if(blockedX.contains(this.getX())){
-            Optional<InfoBomb> bomb = game.getBombList().stream().filter(b -> b.getX() == this.getX()).findFirst();
-            if(bomb.isPresent()){
-                if(bomb.get().getY() >= this.getY() && !game.hasWallAtCoords(this.getX(), this.getY()-1)) {
-                    possibilities.add(AgentAction.MOVE_UP);
-                }
-                if(bomb.get().getY() <= this.getY() && !game.hasWallAtCoords(this.getX(), this.getY()+1)){
-                    possibilities.add(AgentAction.MOVE_DOWN);
-                }
-            }
-        }
-        if(blockedY.contains(this.getY())){
-            Optional<InfoBomb> bomb = game.getBombList().stream().filter(b -> b.getY() == this.getY()).findFirst();
-            if(bomb.isPresent()){
-                if(bomb.get().getX() >= this.getX() && !game.hasWallAtCoords(this.getX()-1, this.getY())) {
-                    possibilities.add(AgentAction.MOVE_LEFT);
-                }
-                if(bomb.get().getX() <= this.getX() && !game.hasWallAtCoords(this.getX()+1, this.getY())){
-                    possibilities.add(AgentAction.MOVE_RIGHT);
-                }
-            }
-        }
-        Random random = new Random();
-        return possibilities.size() > 0 ? possibilities.get(random.nextInt(possibilities.size())) : null;
+    public InfoBomb getNearestBomb(){
+        Optional<InfoBomb> bomb = game.getBombList().stream().filter(e -> Math.sqrt(Math.pow(e.getX() - this.getX(), 2) + Math.pow(e.getY() - this.getY(), 2)) == getDistOfNearestBomb()).findAny();
+        return bomb.orElse(null);
     }
 
-    public AgentAction lookForGoodItemsInRange(BombermanGame game){
-        for(InfoItem item : game.getItemList()){
-            if(item.getType().isGood()) {
-                if (Math.sqrt(
-                        Math.pow(item.getX() - this.getX(), 2) + Math.pow(item.getY() - this.getY(), 2)) <= 5) {
-                    if (item.getY() > this.getY() && !game.hasWallAtCoords(this.getX(), this.getY() + 1)) {
-                        return AgentAction.MOVE_DOWN;
-                    } else if (item.getY() < this.getY() && !game.hasWallAtCoords(this.getX(), this.getY() - 1)) {
-                        return AgentAction.MOVE_UP;
-                    } else if (item.getX() > this.getX() && !game.hasWallAtCoords(this.getX() + 1, this.getY())) {
-                        return AgentAction.MOVE_RIGHT;
-                    } else if (item.getX() < this.getX() && !game.hasWallAtCoords(this.getX() - 1, this.getY())) {
-                        return AgentAction.MOVE_LEFT;
+    public void checkSurrounding(List<AgentAction> possibilities){
+        if(!isLegalMove(0,-1)){
+            possibilities.remove(AgentAction.MOVE_UP);
+        }
+        if(!isLegalMove(0,1)){
+            possibilities.remove(AgentAction.MOVE_DOWN);
+        }
+        if(!isLegalMove(-1,0)){
+            possibilities.remove(AgentAction.MOVE_LEFT);
+        }
+        if(!isLegalMove(1,0)){
+            possibilities.remove(AgentAction.MOVE_RIGHT);
+        }
+    }
+
+    public void runAwayFromBomb(List<AgentAction> possibilities){
+        if(!getInfo().isInvincible() && getDistOfNearestBomb() < 5 && possibilities.size() > 0) {
+            InfoBomb bomb = getNearestBomb();
+            if(bomb != null) {
+                possibilities.remove(AgentAction.STOP);
+                possibilities.remove(AgentAction.PUT_BOMB);
+                if (bomb.getX() == this.getX()) {
+                    if (!isLegalMove(0, -1)) {
+                        possibilities.remove(AgentAction.MOVE_UP);
+                    }
+                    if (!isLegalMove(0, 1)) {
+                        possibilities.remove(AgentAction.MOVE_DOWN);
+                    }
+                }
+                if (bomb.getY() == this.getY()) {
+                    if (!isLegalMove(-1, 0)) {
+                        possibilities.remove(AgentAction.MOVE_LEFT);
+                    }
+                    if (!isLegalMove(1, 0)) {
+                        possibilities.remove(AgentAction.MOVE_RIGHT);
                     }
                 }
             }
         }
-        return null;
     }
 
-    public AgentAction selectSmartAction(BombermanGame game){
-        AgentAction action = placeLotOfBombsIfInvincible(game);
-        if(action != null){
-            return action;
+    public void preventGoingIntoBombRange(ArrayList<AgentAction> possibilities){
+        if(!getInfo().isInvincible() && getDistOfNearestBomb() < 5 && possibilities.size() > 0) {
+            InfoBomb nearestBomb = getNearestBomb();
+            if(nearestBomb != null) {
+                ArrayList<AgentAction> updatedPossibilities = new ArrayList<>(possibilities);
+                for (AgentAction action : updatedPossibilities) {
+                    if (action == AgentAction.MOVE_UP && nearestBomb.getY() < this.getY()){
+                        possibilities.remove(AgentAction.MOVE_UP);
+                    }
+                    else if(action == AgentAction.MOVE_DOWN && nearestBomb.getY() > this.getY()){
+                        possibilities.remove(AgentAction.MOVE_DOWN);
+                    }
+                    else if(action == AgentAction.MOVE_LEFT && nearestBomb.getX() < this.getX()){
+                        possibilities.remove(AgentAction.MOVE_LEFT);
+                    }
+                    else if(action == AgentAction.MOVE_RIGHT && nearestBomb.getX() > this.getX()){
+                        possibilities.remove(AgentAction.MOVE_RIGHT);
+                    }
+                }
+            }
         }
+    }
 
-        action = runAwayFromBombs(game);
-        if(action != null){
-            return action;
-        }
+    public AgentAction selectSmartAction(){
+        ArrayList<AgentAction> possibilities = new ArrayList<>(Arrays.asList(AgentAction.values()));
 
-        action = lookForGoodItemsInRange(game);
-        if(action != null){
-            return action;
+        checkSurrounding(possibilities);
+        runAwayFromBomb(possibilities);
+        preventGoingIntoBombRange(possibilities);
+
+        if(possibilities.size() == 0){
+            return AgentAction.STOP;
         }
 
         Random random = new Random();
-        action = AgentAction.values()[random.nextInt(AgentAction.values().length)];
-        return action;
+        return possibilities.get(random.nextInt(possibilities.size()));
     }
 
-    public void selectAction(BombermanGame game){
+    public void selectAction(){
         if(getInfo().getTurnUntilNotInvincible() > 0){
             getInfo().decreaseTurnUntilNotInvincible(1);
         }
@@ -213,7 +201,7 @@ public abstract class Character {
             getInfo().decreaseTurnUntilNotSick(1);
         }
 
-        AgentAction action = selectSmartAction(game);
+        AgentAction action = selectSmartAction();
         getInfo().setAgentAction(action);
         if (action == AgentAction.PUT_BOMB && getInfo().isActive() && !getInfo().isSick()) {
             if (game.getBombList().stream().noneMatch(e -> e.getX() == getX()

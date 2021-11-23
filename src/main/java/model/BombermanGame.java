@@ -51,16 +51,16 @@ public class BombermanGame extends Game {
         for(InfoAgent agent: map.getStart_agents()){
             switch(agent.getType()){
                 case 'B':
-                    characterMap.get(agent.getType()).add(0, new Bomberman(agent.getX(), agent.getY()));
+                    characterMap.get(agent.getType()).add(0, new Bomberman(agent.getX(), agent.getY(), this));
                     break;
                 case 'V':
-                    characterMap.get(agent.getType()).add(new Bird(agent.getX(), agent.getY()));
+                    characterMap.get(agent.getType()).add(new Bird(agent.getX(), agent.getY(), this));
                     break;
                 case 'E':
-                    characterMap.get(agent.getType()).add(new Rajion(agent.getX(), agent.getY()));
+                    characterMap.get(agent.getType()).add(new Rajion(agent.getX(), agent.getY(), this));
                     break;
                 case 'R':
-                    characterMap.get(agent.getType()).add(new Enemy(agent.getX(), agent.getY()));
+                    characterMap.get(agent.getType()).add(new Enemy(agent.getX(), agent.getY(), this));
                     break;
             }
         }
@@ -201,7 +201,7 @@ public class BombermanGame extends Game {
 
         for(char c : characterMap.keySet()) {
             for (Character character : characterMap.get(c)) {
-                character.selectAction(this);
+                character.selectAction();
             }
         }
     }

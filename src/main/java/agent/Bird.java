@@ -10,13 +10,15 @@ import java.util.Random;
 public class Bird extends Character{
     private int radius;
 
-    public Bird(int x, int y) {
+    public Bird(int x, int y, BombermanGame game) {
         super(new InfoAgent(x, y,
                 AgentAction.STOP,
                 'V',
                 ColorAgent.values()[new Random().nextInt(ColorAgent.values().length)],
                 false,
-                false));
+                false),
+
+                game);
         this.radius = 3;
         getInfo().setActive(false);
     }
@@ -35,12 +37,12 @@ public class Bird extends Character{
     }
 
     @Override
-    public boolean isLegalMove(int xdir, int ydir, BombermanGame game) {
-        if(!isBombermanInRange(game)) {
+    public boolean isLegalMove(int xdir, int ydir) {
+        if(!isBombermanInRange(getGame()) && !getInfo().isActive()) {
             return false;
         }
 
-        boolean[][] walls = game.getMap().get_walls();
+        boolean[][] walls = getGame().getMap().get_walls();
 
         int nextx = getInfo().getX() + xdir;
         int nexty = getInfo().getY() + ydir;
