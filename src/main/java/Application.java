@@ -1,8 +1,16 @@
 import controller.AbstractController;
 import controller.ControllerBombermanGame;
 
+import java.io.File;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 public class Application {
-    public static void main(String[] args) {
-        AbstractController controller = new ControllerBombermanGame("niveau3");
+    public static void main(String[] args) throws URISyntaxException {
+        URL url = Application.class.getResource("layouts/niveau3.lay");
+        assert url != null;
+
+        AbstractController controller = new ControllerBombermanGame(url.toURI().getPath());
     }
 }

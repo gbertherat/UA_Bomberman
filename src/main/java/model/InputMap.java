@@ -4,10 +4,7 @@ import utils.AgentAction;
 import utils.ColorAgent;
 import utils.InfoAgent;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -32,7 +29,7 @@ public class InputMap implements Serializable {
         this.filename = filename;
 
         try {
-            InputStream flux = Objects.requireNonNull(getClass().getResourceAsStream("/layouts/" + filename));
+            InputStream flux = new FileInputStream(filename);
             InputStreamReader lecture = new InputStreamReader(flux);
             buffer = new BufferedReader(lecture);
 
@@ -57,7 +54,7 @@ public class InputMap implements Serializable {
             walls = new boolean[size_x][size_y];
             start_breakable_walls = new boolean[size_x][size_y];
 
-            flux = Objects.requireNonNull(getClass().getResourceAsStream("/layouts/" + filename));
+            flux = new FileInputStream(filename);
             lecture = new InputStreamReader(flux);
             buffer = new BufferedReader(lecture);
             int y = 0;
@@ -65,7 +62,7 @@ public class InputMap implements Serializable {
             ColorAgent[] color = ColorAgent.values();
             int cpt_col = 0;
 
-            start_agents = new ArrayList<InfoAgent>();
+            start_agents = new ArrayList<>();
 
             while ((ligne = buffer.readLine()) != null) {
                 ligne = ligne.trim();

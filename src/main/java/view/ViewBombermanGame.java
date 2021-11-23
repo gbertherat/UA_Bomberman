@@ -17,10 +17,6 @@ public class ViewBombermanGame extends Frame{
         this.map = map;
     }
 
-    public void setMainPanel(PanelBomberman mainPanel) {
-        this.mainPanel = mainPanel;
-    }
-
     public void restart(){
         mainPanel.updateInfoGame(
                 map.getStart_breakable_walls(),
@@ -43,6 +39,10 @@ public class ViewBombermanGame extends Frame{
                 map.getStart_agents());
         frame.setContentPane(mainPanel);
         frame.setVisible(true);
+    }
+
+    public void close(){
+        this.frame.dispose();
     }
 
     @Override

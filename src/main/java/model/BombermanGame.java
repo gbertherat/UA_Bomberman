@@ -16,17 +16,14 @@ public class BombermanGame extends Game {
     public BombermanGame(int maxTurn, int timeMs, InputMap map){
         super(maxTurn, timeMs);
         this.map = map;
-        this.characterMap = new HashMap<>();
-        for(AgentType type: AgentType.values()){
-            this.characterMap.put(type.getChar(), new ArrayList<>());
-        }
-        this.bombList = new ArrayList<>();
-        this.itemList = new ArrayList<>();
-        this.breakableWalls = Arrays.stream(map.getStart_breakable_walls()).map(boolean[]::clone).toArray($ -> map.getStart_breakable_walls().clone());
     }
 
     public InputMap getMap() {
         return map;
+    }
+
+    public void changeMap(InputMap map){
+        this.map = map;
     }
 
     public HashMap<java.lang.Character, ArrayList<Character>> getCharacterMap() {
@@ -48,6 +45,13 @@ public class BombermanGame extends Game {
     @Override
     public void init() {
         super.init();
+        this.characterMap = new HashMap<>();
+        this.bombList = new ArrayList<>();
+        this.itemList = new ArrayList<>();
+        this.breakableWalls = Arrays.stream(map.getStart_breakable_walls()).map(boolean[]::clone).toArray($ -> map.getStart_breakable_walls().clone());
+        for(AgentType type: AgentType.values()){
+            this.characterMap.put(type.getChar(), new ArrayList<>());
+        }
         for(InfoAgent agent: map.getStart_agents()){
             switch(agent.getType()){
                 case 'B':

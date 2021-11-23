@@ -1,27 +1,30 @@
 package view;
 
 import controller.AbstractController;
+import controller.ControllerBombermanGame;
 import model.BombermanGame;
 import view.strategy.CommandStrategy;
 import view.strategy.EtatCreated;
 import view.strategy.EtatFinished;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import java.awt.*;
+import java.io.File;
+import java.util.Locale;
 import java.util.Observable;
 
 public class ViewCommand extends Frame {
-    private JFrame frame;
 
-    private JButton playButton;
-    private JButton stepButton;
-    private JButton pauseButton;
-    private JButton restartButton;
+    private final JButton playButton;
+    private final JButton stepButton;
+    private final JButton pauseButton;
+    private final JButton restartButton;
 
-    private JLabel turnLabel;
-    private JLabel gameOverLabel;
+    private final JLabel turnLabel;
+    private final JLabel gameOverLabel;
     private CommandStrategy etat;
-    private AbstractController controller;
+    private final AbstractController controller;
 
     public ViewCommand(AbstractController controller){
         this.controller = controller;
@@ -59,7 +62,42 @@ public class ViewCommand extends Frame {
     @Override
     public void init(int width, int height, int yoffset) {
         super.init(width, height, yoffset);
-        frame = super.getJFrame();
+        JFrame frame = super.getJFrame();
+
+        JMenuBar menuBar = new JMenuBar();
+        JMenu fileMenu = new JMenu("File");
+        JMenuItem openFileItem = new JMenuItem("Load layout");
+        openFileItem.addActionListener(e -> {
+            JFileChooser layoutChooser = new JFileChooser(new File("."));
+            layoutChooser.setDialogTitle("Load map layout");
+            layoutChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            FileFilter filter = new FileFilter() {
+                @Override
+                public boolean accept(File f) {
+                    if (f.isDirectory()) {
+                        return true;
+                    } else {
+                        return f.getName().toLowerCase().endsWith(".lay");
+                    }
+                }
+
+                @Override
+                public String getDescription() {
+                    return "Map layout (*.lay)";
+                }
+            };
+            layoutChooser.setFileFilter(filter);
+            layoutChooser.setAcceptAllFileFilterUsed(false);
+            int result = layoutChooser.showOpenDialog(null);
+            if(result == JFileChooser.APPROVE_OPTION){
+                File selectedFile = layoutChooser.getSelectedFile();
+                ((ControllerBombermanGame) controller).changeMap(selectedFile.getAbsolutePath());
+            }
+        });
+        fileMenu.add(openFileItem);
+
+        menuBar.add(fileMenu);
+        frame.setJMenuBar(menuBar);
 
         JPanel mainPanel = new JPanel(new GridLayout(2,1));
         frame.setContentPane(mainPanel);
