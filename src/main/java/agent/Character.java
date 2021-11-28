@@ -2,6 +2,8 @@ package agent;
 
 import model.BombermanGame;
 import model.Game;
+import pathfinding.AStar;
+import pathfinding.Node;
 import sun.management.Agent;
 import utils.*;
 
@@ -68,7 +70,7 @@ public abstract class Character {
         }
     }
 
-    public void move(AgentAction action, BombermanGame game) {
+    public void move(AgentAction action) {
         int xdir = 0;
         int ydir = 0;
         switch (action) {
@@ -113,12 +115,6 @@ public abstract class Character {
         }
         if(game.getBombList().stream().anyMatch(e -> e.getX() == this.getX() && e.getY() == this.getY())){
             possibilities.put(AgentAction.PUT_BOMB, possibilities.get(AgentAction.PUT_BOMB)-9999);
-        }
-    }
-
-    public void placeBombsIfInvincible(Map<AgentAction, Integer> possibilities){
-        if(getInfo().isInvincible() && getInfo().getTurnUntilNotInvincible() > 3){
-            possibilities.put(AgentAction.PUT_BOMB, possibilities.get(AgentAction.PUT_BOMB)+1000);
         }
     }
 
@@ -188,14 +184,59 @@ public abstract class Character {
         }
     }
 
+    public void targetBomberman(Map<AgentAction, Integer> possibilities){
+        AStar pathfinding = new AStar(game.getMap().get_walls(), getX(), getY());
+
+        Optional<Character> bomberman = game.getCharacterMap().get('B').stream().filter(e -> Math.sqrt(Math.pow(e.getX() - this.getX(), 2) + Math.pow(e.getY() - this.getY(), 2)) <= 20).findFirst();
+
+        if(bomberman.isPresent()) {
+            List<Node> path = pathfinding.getPathTo(bomberman.get().getX(), bomberman.get().getY());
+            if(path != null && path.size() > 1) {
+                Node n = path.get(1);
+                if (n.getX() < this.getX()) {
+                    possibilities.put(AgentAction.MOVE_LEFT, possibilities.get(AgentAction.MOVE_LEFT) + 100);
+                } else if (n.getX() > this.getX()) {
+                    possibilities.put(AgentAction.MOVE_RIGHT, possibilities.get(AgentAction.MOVE_RIGHT) + 100);
+                } else if (n.getY() < this.getY()) {
+                    possibilities.put(AgentAction.MOVE_UP, possibilities.get(AgentAction.MOVE_UP) + 100);
+                } else if (n.getY() > this.getY()) {
+                    possibilities.put(AgentAction.MOVE_DOWN, possibilities.get(AgentAction.MOVE_DOWN) + 100);
+                }
+            }
+        }
+    }
+
+    public Character getNearestCharacter(){
+        Character nearestChar = game.getCharacterMap().get('B').get(0);
+        for(char key : game.getCharacterMap().keySet()){
+            for(Character character : game.getCharacterMap().get(key)){
+                if(Math.sqrt(Math.pow(character.getX() - this.getX(), 2) + Math.pow(character.getY() - this.getY(), 2)) <
+                        Math.sqrt(Math.pow(nearestChar.getX() - this.getX(), 2) + Math.pow(nearestChar.getY() - this.getY(), 2))){
+                    nearestChar = character;
+                }
+            }
+        }
+        return nearestChar;
+    }
+
+    public void placeBombIfNearCharacter(Map<AgentAction, Integer> possibilities){
+        Character nearestChar = getNearestCharacter();
+        if(Math.sqrt(Math.pow(nearestChar.getX() - this.getX(), 2) + Math.pow(nearestChar.getY() - this.getY(), 2)) < getInfo().getBombRange()){
+            possibilities.put(AgentAction.PUT_BOMB, possibilities.get(AgentAction.PUT_BOMB)+200);
+        }
+    }
+
     public AgentAction selectSmartAction(){
         Map<AgentAction, Integer> weightedPossibilities = new HashMap<>();
         Arrays.stream(AgentAction.values()).forEach(e -> weightedPossibilities.put(e, 0));
 
         checkSurrounding(weightedPossibilities);
-        placeBombsIfInvincible(weightedPossibilities);
         runAwayFromBomb(weightedPossibilities);
         checkForItems(weightedPossibilities);
+        if(getInfo().getType() != 'B'){
+            targetBomberman(weightedPossibilities);
+        }
+        placeBombIfNearCharacter(weightedPossibilities);
 
         int maxWeight = -9999;
         List<AgentAction> smartActionList = new ArrayList<>();
@@ -231,7 +272,7 @@ public abstract class Character {
                 game.getBombList().add(putBomb());
             }
         } else {
-            move(action, game);
+            move(action);
         }
     }
 }
