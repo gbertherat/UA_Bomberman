@@ -96,6 +96,9 @@ public class BombermanGame extends Game {
     }
 
     public boolean hasWallAtCoords(int x, int y){
+        if(x < 0 || y < 0 || x > getBreakableWalls().length || y > getBreakableWalls()[x].length){
+            return false;
+        }
         return getBreakableWalls()[x][y] || map.get_walls()[x][y];
     }
 

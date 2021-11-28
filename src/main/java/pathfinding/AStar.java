@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class AStar {
-    private boolean[][] walls;
-    private int xstart;
-    private int ystart;
+    private final boolean[][] walls;
+    private final int xstart;
+    private final int ystart;
 
     public AStar(boolean[][] walls, int xstart, int ystart){
         this.walls = walls;
@@ -16,8 +16,7 @@ public class AStar {
     }
 
     private int getDistanceBetweenCoords(Node cur, int dx, int dy, int xend, int yend){
-        int value = Math.abs(cur.getX() + dx - xend) + Math.abs(cur.getY() + dy - yend);
-        return value;
+        return Math.abs(cur.getX() + dx - xend) + Math.abs(cur.getY() + dy - yend);
     }
 
     private boolean nodeIsInList(Node node, List<Node> list){

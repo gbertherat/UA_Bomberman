@@ -16,7 +16,7 @@ public class ControllerBombermanGame extends AbstractController{
     public ControllerBombermanGame(String mapName){
         map = new InputMap(mapName);
 
-        bg = new BombermanGame(1024,500, map);
+        bg = new BombermanGame(1024,400, map);
         vbg = new ViewBombermanGame();
         vc = new ViewCommand(this);
 

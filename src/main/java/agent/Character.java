@@ -125,7 +125,6 @@ public abstract class Character {
     public void runAwayFromBomb(Map<AgentAction, Integer> possibilities){
         if(!getInfo().isInvincible() && possibilities.size() > 0) {
             for(InfoBomb bomb : getNearestBombs()){
-                possibilities.put(AgentAction.STOP, possibilities.get(AgentAction.STOP)-1000);
                 possibilities.put(AgentAction.PUT_BOMB, possibilities.get(AgentAction.PUT_BOMB)-100);
                 if(bomb.getX() == this.getX()){
                     if(bomb.getY() > this.getY()){
@@ -166,20 +165,24 @@ public abstract class Character {
     }
 
     public void checkForItems(Map<AgentAction, Integer> possibilities){
+        AStar pathfinding = new AStar(game.getMap().get_walls(), getX(), getY());
         for(InfoItem item : getNearestItems()){
             int toAdd = 100 - (int) Math.sqrt(Math.pow(item.getX() - this.getX(), 2) + Math.pow(item.getY() - this.getY(), 2))*10;
             if(!item.getType().isGood()){
                 toAdd = -toAdd;
             }
-            if(item.getX() < this.getX()){
-                possibilities.put(AgentAction.MOVE_LEFT, possibilities.get(AgentAction.MOVE_LEFT)+toAdd);
-            } else if(item.getX() > this.getX()){
-                possibilities.put(AgentAction.MOVE_RIGHT, possibilities.get(AgentAction.MOVE_RIGHT)+toAdd);
-            }
-            if(item.getY() < this.getY()){
-                possibilities.put(AgentAction.MOVE_UP, possibilities.get(AgentAction.MOVE_UP)+toAdd);
-            } else if(item.getY() > this.getY()){
-                possibilities.put(AgentAction.MOVE_DOWN, possibilities.get(AgentAction.MOVE_DOWN)+toAdd);
+            List<Node> path = pathfinding.getPathTo(item.getX(), item.getY());
+            if(path != null && path.size() > 1) {
+                Node n = path.get(1);
+                if (n.getX() < this.getX()) {
+                    possibilities.put(AgentAction.MOVE_LEFT, possibilities.get(AgentAction.MOVE_LEFT) + toAdd);
+                } else if (n.getX() > this.getX()) {
+                    possibilities.put(AgentAction.MOVE_RIGHT, possibilities.get(AgentAction.MOVE_RIGHT) + toAdd);
+                } else if (n.getY() < this.getY()) {
+                    possibilities.put(AgentAction.MOVE_UP, possibilities.get(AgentAction.MOVE_UP) + toAdd);
+                } else if (n.getY() > this.getY()) {
+                    possibilities.put(AgentAction.MOVE_DOWN, possibilities.get(AgentAction.MOVE_DOWN) + toAdd);
+                }
             }
         }
     }
@@ -207,22 +210,48 @@ public abstract class Character {
     }
 
     public Character getNearestCharacter(){
-        Character nearestChar = game.getCharacterMap().get('B').get(0);
-        for(char key : game.getCharacterMap().keySet()){
-            for(Character character : game.getCharacterMap().get(key)){
-                if(Math.sqrt(Math.pow(character.getX() - this.getX(), 2) + Math.pow(character.getY() - this.getY(), 2)) <
-                        Math.sqrt(Math.pow(nearestChar.getX() - this.getX(), 2) + Math.pow(nearestChar.getY() - this.getY(), 2))){
-                    nearestChar = character;
+        if(game.getCharacterMap().get('B').size() > 0) {
+            Character nearestChar = game.getCharacterMap().get('B').get(0);
+            for (char key : game.getCharacterMap().keySet()) {
+                for (Character character : game.getCharacterMap().get(key)) {
+                    if (Math.sqrt(Math.pow(character.getX() - this.getX(), 2) + Math.pow(character.getY() - this.getY(), 2)) <
+                            Math.sqrt(Math.pow(nearestChar.getX() - this.getX(), 2) + Math.pow(nearestChar.getY() - this.getY(), 2))) {
+                        nearestChar = character;
+                    }
                 }
             }
+            return nearestChar;
         }
-        return nearestChar;
+        return null;
     }
 
     public void placeBombIfNearCharacter(Map<AgentAction, Integer> possibilities){
         Character nearestChar = getNearestCharacter();
-        if(Math.sqrt(Math.pow(nearestChar.getX() - this.getX(), 2) + Math.pow(nearestChar.getY() - this.getY(), 2)) < getInfo().getBombRange()){
-            possibilities.put(AgentAction.PUT_BOMB, possibilities.get(AgentAction.PUT_BOMB)+200);
+        if(nearestChar != null) {
+            if (Math.sqrt(Math.pow(nearestChar.getX() - this.getX(), 2) + Math.pow(nearestChar.getY() - this.getY(), 2)) < getInfo().getBombRange()) {
+                possibilities.put(AgentAction.PUT_BOMB, possibilities.get(AgentAction.PUT_BOMB) + 200);
+            }
+        }
+    }
+
+    public void placeBombIfNearWall(Map<AgentAction, Integer> possibilities){
+        for(int x = -1; x < 1; x++){
+            if(x != 0) {
+                if (game.hasWallAtCoords(x, this.getY())) {
+                    possibilities.put(AgentAction.PUT_BOMB, possibilities.get(AgentAction.PUT_BOMB) + 20);
+                } else {
+                    possibilities.put(AgentAction.PUT_BOMB, possibilities.get(AgentAction.PUT_BOMB) - 50);
+                }
+            }
+        }
+        for(int y = -1; y < 1; y++){
+            if(y != 0) {
+                if (game.hasWallAtCoords(this.getX(), y)) {
+                    possibilities.put(AgentAction.PUT_BOMB, possibilities.get(AgentAction.PUT_BOMB) + 20);
+                } else {
+                    possibilities.put(AgentAction.PUT_BOMB, possibilities.get(AgentAction.PUT_BOMB) - 50);
+                }
+            }
         }
     }
 
@@ -237,6 +266,7 @@ public abstract class Character {
             targetBomberman(weightedPossibilities);
         }
         placeBombIfNearCharacter(weightedPossibilities);
+        placeBombIfNearWall(weightedPossibilities);
 
         int maxWeight = -9999;
         List<AgentAction> smartActionList = new ArrayList<>();
