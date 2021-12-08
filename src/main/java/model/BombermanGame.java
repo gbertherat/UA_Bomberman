@@ -12,10 +12,12 @@ public class BombermanGame extends Game {
     private ArrayList<InfoBomb> bombList;
     private ArrayList<InfoItem> itemList;
     private boolean[][] breakableWalls;
+    private AgentAction bombermanAction;
 
     public BombermanGame(int maxTurn, int timeMs, InputMap map){
         super(maxTurn, timeMs);
         this.map = map;
+        this.bombermanAction = AgentAction.STOP;
     }
 
     public InputMap getMap() {
@@ -42,6 +44,14 @@ public class BombermanGame extends Game {
         return breakableWalls;
     }
 
+    public void setBombermanAction(AgentAction action){
+        bombermanAction = action;
+    }
+
+    public AgentAction getBombermanAction(){
+        return bombermanAction;
+    }
+
     @Override
     public void init() {
         super.init();
@@ -55,16 +65,17 @@ public class BombermanGame extends Game {
         for(InfoAgent agent: map.getStart_agents()){
             switch(agent.getType()){
                 case 'B':
-                    characterMap.get(agent.getType()).add(0, new Bomberman(agent.getX(), agent.getY(), this));
+                    boolean isAI = characterMap.get(agent.getType()).size() != 0;
+                    characterMap.get(agent.getType()).add(0, new Bomberman(agent.getX(), agent.getY(), this, isAI));
                     break;
                 case 'V':
-                    characterMap.get(agent.getType()).add(new Bird(agent.getX(), agent.getY(), this));
+                    characterMap.get(agent.getType()).add(new Bird(agent.getX(), agent.getY(), this, true));
                     break;
                 case 'E':
-                    characterMap.get(agent.getType()).add(new Rajion(agent.getX(), agent.getY(), this));
+                    characterMap.get(agent.getType()).add(new Rajion(agent.getX(), agent.getY(), this, true));
                     break;
                 case 'R':
-                    characterMap.get(agent.getType()).add(new Enemy(agent.getX(), agent.getY(), this));
+                    characterMap.get(agent.getType()).add(new Enemy(agent.getX(), agent.getY(), this, true));
                     break;
             }
         }
@@ -102,6 +113,19 @@ public class BombermanGame extends Game {
         return getBreakableWalls()[x][y] || map.get_walls()[x][y];
     }
 
+    // On active les agents Bird qui sont proche d'un Bomberman.
+    public void checkBirdsNearBomberman(){
+        ArrayList<Character> birds = characterMap.get('V');
+        ArrayList<Character> bomberman = characterMap.get('B');
+        for(Character bird: birds){
+            InfoAgent birdInfo = bird.getInfo();
+            if(bomberman.stream().anyMatch(e -> Math.sqrt(Math.pow(birdInfo.getX() - e.getInfo().getX(), 2) + Math.pow(birdInfo.getY() - e.getInfo().getY(), 2)) < 5)){
+                bird.getInfo().setActive(true);
+            }
+        }
+    }
+
+    // Si des murs cassables sont dans la range d'une bombe qui explose, ils sont détruits
     public void checkWallsInBombRange(int x, int y, int range){
         for(int i = -range; i < range+1; i++){
             if(x+i > 0 && x+i < breakableWalls.length && y > 0 && y < breakableWalls[x+i].length && breakableWalls[x+i][y]) {
@@ -115,6 +139,7 @@ public class BombermanGame extends Game {
         }
     }
 
+    // Si des agents sont dans la range d'une bombe qui explose, ils sont éliminés
     public void checkCharactersInBombRange(int x, int y, int range){
         for(char c : characterMap.keySet()){
             for(Character agent: characterMap.get(c)){
@@ -133,6 +158,7 @@ public class BombermanGame extends Game {
         }
     }
 
+    // On actualise les bombes sur la map
     public void checkBombs(){
         ArrayList<InfoBomb> newBombList = new ArrayList<>();
         for(InfoBomb bomb : bombList){
@@ -150,6 +176,7 @@ public class BombermanGame extends Game {
         bombList = newBombList;
     }
 
+    // Si le rajion se trouve sur le bomberman, il le tue.
     public void checkRajionOnBomberman(){
         ArrayList<Character> rajionList = characterMap.get('E');
         ArrayList<Character> bombermanList = characterMap.get('B');
@@ -163,12 +190,14 @@ public class BombermanGame extends Game {
         }
     }
 
+    // On supprime les agents morts de la liste des joueurs.
     public void removeDeadCharacters(){
         for(char c : characterMap.keySet()){
             characterMap.get(c).removeIf(e -> !e.getInfo().isAlive());
         }
     }
 
+    // On regarde si un agent se trouve sur un item pour le lui donner.
     public void checkCharactersOnItems(){
         for(char c : characterMap.keySet()){
             for(Character character: characterMap.get(c)){
@@ -184,11 +213,13 @@ public class BombermanGame extends Game {
         }
     }
 
+    // Check si le jeu est fini
+    // Le jeu est fini si le joueur est mort ou si tous les agents sont morts.
     public void checkIfGameOver(){
         ArrayList<Character> characters = new ArrayList<>();
         characterMap.keySet().forEach(key -> characters.addAll(characterMap.get(key)));
 
-        if(characterMap.get('B').stream().noneMatch(c -> c.getInfo().isAlive())){
+        if(characterMap.get('B').stream().noneMatch(e -> !e.isAI() && e.getInfo().isAlive())){
             gameOver("You died!");
         }
         if(characters.size() == 1){
@@ -198,19 +229,62 @@ public class BombermanGame extends Game {
         }
     }
 
+    // Check si le déplacement vers une direction est possible
+    public boolean isLegalMove(InfoAgent info, int xdir, int ydir) {
+        if(!info.isActive()) {
+            return false;
+        }
+
+        boolean[][] walls = getMap().get_walls();
+        boolean[][] breakableWalls = getBreakableWalls();
+        ArrayList<InfoBomb> bombList = getBombList();
+
+        int nextx = info.getX() + xdir;
+        int nexty = info.getY() + ydir;
+
+        if(!info.getCanFly()) {
+            for (InfoBomb bomb : bombList) {
+                if (bomb.getX() == nextx && bomb.getY() == nexty) {
+                    return false;
+                }
+            }
+        }
+
+        for(char c : getCharacterMap().keySet()){
+            for(Character agent : getCharacterMap().get(c)){
+                InfoAgent i = agent.getInfo();
+                if(i.getX() == nextx && i.getY() == nexty){
+                    return false;
+                }
+            }
+        }
+
+        if(nextx >= 0 && nexty >= 0
+                && nextx < walls.length && nexty < walls[nextx].length) {
+            return !(walls[nextx][nexty] || (breakableWalls[nextx][nexty] && !info.getCanFly()));
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public void takeTurn() {
+        // Checklist à chaque début de tours
+        checkBirdsNearBomberman();
         checkBombs();
         checkRajionOnBomberman();
         removeDeadCharacters();
         checkCharactersOnItems();
         checkIfGameOver();
 
+        // Chaque agent doivent choisir une action
         for(char c : characterMap.keySet()) {
             for (Character character : characterMap.get(c)) {
                 character.selectAction();
             }
         }
+
+        bombermanAction = AgentAction.STOP;
     }
 
     @Override

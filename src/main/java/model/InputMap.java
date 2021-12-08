@@ -72,14 +72,14 @@ public class InputMap implements Serializable {
                     start_breakable_walls[x][y] = ligne.charAt(x) == '$';
 
                     if (ligne.charAt(x) == 'E' || ligne.charAt(x) == 'V' || ligne.charAt(x) == 'R') {
-                        start_agents.add(new InfoAgent(x, y, AgentAction.STOP, ligne.charAt(x), ColorAgent.DEFAULT, false, false));
+                        start_agents.add(new InfoAgent(x, y, AgentAction.STOP, ligne.charAt(x), ColorAgent.DEFAULT, false, false, false, false));
                     }
 
                     if (ligne.charAt(x) == 'B') {
                         ColorAgent col;
                         if (cpt_col < color.length) col = color[cpt_col];
                         else col = ColorAgent.DEFAULT;
-                        start_agents.add(new InfoAgent(x, y, AgentAction.STOP, ligne.charAt(x), col, false, false));
+                        start_agents.add(new InfoAgent(x, y, AgentAction.STOP, ligne.charAt(x), col, false, false, false, false));
                         cpt_col++;
                     }
 

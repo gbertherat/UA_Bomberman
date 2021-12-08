@@ -10,6 +10,7 @@ public class InfoAgent {
 
     private boolean isAlive;
     private boolean isActive;
+    private boolean canFly;
 
     private int bombRange;
     private boolean isInvincible;
@@ -18,7 +19,7 @@ public class InfoAgent {
     private boolean isSick;
     private int turnUntilNotSick;
 
-    public InfoAgent(int x, int y, AgentAction agentAction, char type, ColorAgent color, boolean isInvincible, boolean isSick) {
+    public InfoAgent(int x, int y, AgentAction agentAction, char type, ColorAgent color, boolean canFly, boolean isActive, boolean isInvincible, boolean isSick) {
         this.x = x;
         this.y = y;
         this.agentAction = agentAction;
@@ -26,7 +27,8 @@ public class InfoAgent {
         this.type = type;
 
         this.isAlive = true;
-        this.isActive = true;
+        this.isActive = isActive;
+        this.canFly = canFly;
 
         this.bombRange = 1;
         this.isInvincible = isInvincible;
@@ -76,13 +78,13 @@ public class InfoAgent {
         this.bombRange = bombRange;
     }
 
-    public void increaseBombRangeBy(int range){
+    public void increaseBombRangeBy(int range) {
         this.bombRange += range;
     }
 
-    public void decreaseBombRange(int range){
+    public void decreaseBombRange(int range) {
         this.bombRange -= range;
-        if(bombRange < 1){
+        if (bombRange < 1) {
             bombRange = 1;
         }
     }
@@ -103,9 +105,9 @@ public class InfoAgent {
         this.turnUntilNotInvincible = turnUntilNotInvincible;
     }
 
-    public void decreaseTurnUntilNotInvincible(int turn){
+    public void decreaseTurnUntilNotInvincible(int turn) {
         this.turnUntilNotInvincible -= turn;
-        if(this.turnUntilNotInvincible <= 0){
+        if (this.turnUntilNotInvincible <= 0) {
             this.turnUntilNotInvincible = 0;
             setInvincible(false);
         }
@@ -127,9 +129,9 @@ public class InfoAgent {
         this.turnUntilNotSick = turnUntilNotSick;
     }
 
-    public void decreaseTurnUntilNotSick(int turn){
+    public void decreaseTurnUntilNotSick(int turn) {
         this.turnUntilNotSick -= turn;
-        if(this.turnUntilNotSick <= 0){
+        if (this.turnUntilNotSick <= 0) {
             this.turnUntilNotSick = 0;
             setSick(false);
         }
@@ -151,6 +153,10 @@ public class InfoAgent {
         isActive = active;
     }
 
+    public boolean getCanFly() {
+        return canFly;
+    }
+
     public AgentAction getAgentAction() {
         return agentAction;
     }
@@ -158,7 +164,5 @@ public class InfoAgent {
     public void setAgentAction(AgentAction agentAction) {
         this.agentAction = agentAction;
     }
-
-
 }
 	

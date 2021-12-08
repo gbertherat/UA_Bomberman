@@ -1,22 +1,22 @@
 package controller;
 
 import model.BombermanGame;
-import model.Game;
 import model.InputMap;
+import utils.AgentAction;
 import view.ViewBombermanGame;
 import view.ViewCommand;
-import view.strategy.EtatCreated;
+import view.etat.EtatCreated;
 
 public class ControllerBombermanGame extends AbstractController{
-    private BombermanGame bg;
-    private ViewBombermanGame vbg;
-    private ViewCommand vc;
+    private final BombermanGame bg;
+    private final ViewBombermanGame vbg;
+    private final ViewCommand vc;
     private InputMap map;
 
     public ControllerBombermanGame(String mapName){
         map = new InputMap(mapName);
 
-        bg = new BombermanGame(1024,400, map);
+        bg = new BombermanGame(1024,DefaultSpeed.value, map);
         vbg = new ViewBombermanGame();
         vc = new ViewCommand(this);
 
@@ -63,6 +63,10 @@ public class ControllerBombermanGame extends AbstractController{
 
     @Override
     public void setSpeed(int speed) {
-        bg.setTimeMs(speed * 500);
+        bg.setTimeMs((speed+1) * DefaultSpeed.value);
+    }
+
+    public void setBombermanAction(AgentAction action){
+        this.bg.setBombermanAction(action);
     }
 }

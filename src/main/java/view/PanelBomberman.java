@@ -193,7 +193,6 @@ public class PanelBomberman extends JPanel {
         RescaleOp op = new RescaleOp(scales, contraste, null);
         img = op.filter(img, null);
 
-
         if (img != null) {
             g.drawImage(img, (int) pos_x, (int) pos_y, (int) stepx, (int) stepy, this);
         }

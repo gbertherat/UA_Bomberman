@@ -39,6 +39,7 @@ public class ViewBombermanGame extends Frame{
                 map.getStart_agents());
         frame.setContentPane(mainPanel);
         frame.setVisible(true);
+        frame.setFocusable(false);
     }
 
     public void close(){

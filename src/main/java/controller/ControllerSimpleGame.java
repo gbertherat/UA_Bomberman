@@ -3,7 +3,7 @@ package controller;
 import model.Game;
 import model.SimpleGame;
 import view.*;
-import view.strategy.EtatCreated;
+import view.etat.EtatCreated;
 
 public class ControllerSimpleGame extends AbstractController {
     private Game game;

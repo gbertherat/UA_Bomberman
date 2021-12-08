@@ -1,11 +1,11 @@
-package view.strategy;
+package view.etat;
 
 import view.ViewCommand;
 
-public class EtatCreated implements CommandStrategy{
+public class EtatRestart implements CommandEtat {
     private ViewCommand vc;
 
-    public EtatCreated(ViewCommand vc){
+    public EtatRestart(ViewCommand vc){
         this.vc = vc;
         this.vc.setPlayButtonEnabled(true);
         this.vc.setStepButtonEnabled(false);
@@ -20,11 +20,11 @@ public class EtatCreated implements CommandStrategy{
 
     @Override
     public void pause() {
-        System.out.println("Le jeu n'est pas lancé!");
+        System.out.println("Le jeu n'a pas été lancé!");
     }
 
     @Override
     public void restart() {
-        System.out.println("Le jeu n'est pas lancé!");
+        System.out.println("Le jeu a déjà été redémarré!");
     }
 }

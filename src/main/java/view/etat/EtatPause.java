@@ -1,8 +1,8 @@
-package view.strategy;
+package view.etat;
 
 import view.ViewCommand;
 
-public class EtatPause implements CommandStrategy{
+public class EtatPause implements CommandEtat {
     private ViewCommand vc;
 
     public EtatPause(ViewCommand vc){

@@ -1,6 +1,6 @@
-package view.strategy;
+package view.etat;
 
-public interface CommandStrategy {
+public interface CommandEtat {
     void play();
     void pause();
     void restart();

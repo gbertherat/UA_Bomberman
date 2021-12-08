@@ -3,19 +3,20 @@ package view;
 import controller.AbstractController;
 import controller.ControllerBombermanGame;
 import model.BombermanGame;
-import view.strategy.CommandStrategy;
-import view.strategy.EtatCreated;
-import view.strategy.EtatFinished;
+import utils.AgentAction;
+import view.etat.CommandEtat;
+import view.etat.EtatCreated;
+import view.etat.EtatFinished;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
-import java.util.Locale;
 import java.util.Observable;
 
 public class ViewCommand extends Frame {
-
     private final JButton playButton;
     private final JButton stepButton;
     private final JButton pauseButton;
@@ -23,7 +24,7 @@ public class ViewCommand extends Frame {
 
     private final JLabel turnLabel;
     private final JLabel gameOverLabel;
-    private CommandStrategy etat;
+    private CommandEtat etat;
     private final AbstractController controller;
 
     public ViewCommand(AbstractController controller){
@@ -38,7 +39,7 @@ public class ViewCommand extends Frame {
         gameOverLabel.setFont(new Font("Arial", Font.PLAIN, 18));
     }
 
-    public void setEtat(CommandStrategy etat) {
+    public void setEtat(CommandEtat etat) {
         this.etat = etat;
     }
 
@@ -57,7 +58,6 @@ public class ViewCommand extends Frame {
     public void setRestartButtonEnabled(boolean value){
         restartButton.setEnabled(value);
     }
-
 
     @Override
     public void init(int width, int height, int yoffset) {
@@ -138,13 +138,14 @@ public class ViewCommand extends Frame {
         JLabel sliderLabel = new JLabel("Temps entre les tours (s)", JLabel.CENTER);
         bottomLeftPanel.add(sliderLabel);
 
-        JSlider slider = new JSlider(0,1,10,1);
+        JSlider slider = new JSlider(0,0,10,0);
         slider.setMinorTickSpacing(1);
         slider.setMajorTickSpacing(1);
         slider.setSnapToTicks(true);
         slider.setPaintTicks(true);
         slider.setPaintLabels(true);
         slider.addChangeListener(e -> controller.setSpeed(slider.getValue()));
+        slider.setFocusable(false);
         bottomLeftPanel.add(slider);
 
         JPanel bottomRightPanel = new JPanel(new GridLayout(2, 1));
@@ -155,6 +156,47 @@ public class ViewCommand extends Frame {
 
         frame.setVisible(true);
         setEtat(new EtatCreated(this));
+
+        getJFrame().setFocusable(true);
+        getJFrame().addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                AgentAction action = AgentAction.STOP;
+                switch(e.getKeyCode()){
+                    case KeyEvent.VK_UP:
+                    case KeyEvent.VK_Z:
+                        action = AgentAction.MOVE_UP;
+                        break;
+                    case KeyEvent.VK_DOWN:
+                    case KeyEvent.VK_S:
+                        action = AgentAction.MOVE_DOWN;
+                        break;
+                    case KeyEvent.VK_LEFT:
+                    case KeyEvent.VK_Q:
+                        action = AgentAction.MOVE_LEFT;
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                    case KeyEvent.VK_D:
+                        action = AgentAction.MOVE_RIGHT;
+                        break;
+                    case KeyEvent.VK_SPACE:
+                    case KeyEvent.VK_E:
+                        action = AgentAction.PUT_BOMB;
+                        break;
+                }
+                ((ControllerBombermanGame) controller).setBombermanAction(action);
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        });
     }
 
     public void setTurnLabel(String turnNo){
@@ -164,6 +206,8 @@ public class ViewCommand extends Frame {
     public void setGameOverLabel(String label) {
         this.gameOverLabel.setText(label);
     }
+
+
 
     @Override
     public void update(Observable o, Object arg) {

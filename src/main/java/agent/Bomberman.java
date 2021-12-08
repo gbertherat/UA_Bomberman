@@ -8,14 +8,13 @@ import utils.InfoAgent;
 import java.util.Random;
 
 public class Bomberman extends Character {
-    public Bomberman(int x, int y, BombermanGame game) {
+
+    public Bomberman(int x, int y, BombermanGame game, boolean isAI) {
         super(new InfoAgent(x, y,
                 AgentAction.STOP,
                 'B',
                 ColorAgent.values()[new Random().nextInt(ColorAgent.values().length)],
-                false,
-                false),
-
-                game);
+                false, true, false, false),
+                game, isAI);
     }
 }

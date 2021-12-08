@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+// Algorithme A* de pathfinding pour les agents
 public class AStar {
     private final boolean[][] walls;
     private final int xstart;

@@ -1,30 +1,30 @@
-package view.strategy;
+package view.etat;
 
 import view.ViewCommand;
 
-public class EtatPlay implements CommandStrategy{
+public class EtatFinished implements CommandEtat {
     private ViewCommand vc;
 
-    public EtatPlay(ViewCommand vc){
+    public EtatFinished(ViewCommand vc){
         this.vc = vc;
         this.vc.setPlayButtonEnabled(false);
         this.vc.setStepButtonEnabled(false);
-        this.vc.setPauseButtonEnabled(true);
+        this.vc.setPauseButtonEnabled(false);
         this.vc.setRestartButtonEnabled(true);
     }
 
     @Override
     public void play() {
-        System.out.println("Le jeu est déjà lancé!");
+        System.out.println("Le jeu est finie!");
     }
 
     @Override
     public void pause() {
-        vc.setEtat(new EtatPause(vc));
+        System.out.println("Le jeu est finie");
     }
 
     @Override
     public void restart() {
-        vc.setEtat(new EtatRestart(vc));
+        vc.setEtat(new EtatCreated(vc));
     }
 }
