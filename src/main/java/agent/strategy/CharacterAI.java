@@ -213,13 +213,19 @@ public class CharacterAI implements CharacterStrategy{
 
         // Liste de fonctions "neuronnes" pour l'intelligence artificielle des agents
         checkSurrounding(weightedPossibilities);
-        runAwayFromBomb(weightedPossibilities);
-        checkForItems(weightedPossibilities);
-        if(info.getType() != 'B'){
-            targetBomberman(weightedPossibilities);
+        
+        switch(game.getDifficulty()) {
+            case 3:
+                checkForItems(weightedPossibilities);
+            case 2:
+                if (info.getType() != 'B') {
+                    targetBomberman(weightedPossibilities);
+                }
+            case 1:
+                runAwayFromBomb(weightedPossibilities);
+                placeBombIfNearCharacter(weightedPossibilities);
+                placeBombIfNearWall(weightedPossibilities);
         }
-        placeBombIfNearCharacter(weightedPossibilities);
-        placeBombIfNearWall(weightedPossibilities);
 
         // On ne garde que les actions avec le poids le plus élevée
         int maxWeight = -9999;

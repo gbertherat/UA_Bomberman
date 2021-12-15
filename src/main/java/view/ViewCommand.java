@@ -61,10 +61,15 @@ public class ViewCommand extends Frame {
 
     @Override
     public void init(int width, int height, int yoffset) {
+        // Frame initialization
         super.init(width, height, yoffset);
         JFrame frame = super.getJFrame();
 
+        // Menu bar
         JMenuBar menuBar = new JMenuBar();
+
+
+        // File related menu items
         JMenu fileMenu = new JMenu("File");
         JMenuItem openFileItem = new JMenuItem("Load layout");
         openFileItem.addActionListener(e -> {
@@ -95,10 +100,33 @@ public class ViewCommand extends Frame {
             }
         });
         fileMenu.add(openFileItem);
-
         menuBar.add(fileMenu);
+
+        // Difficulty menu related items
+        JMenu difficultyMenu = new JMenu("Difficulty");
+        ButtonGroup buttonGroup = new ButtonGroup();
+
+        JRadioButtonMenuItem radioButtonMenuItem = new JRadioButtonMenuItem("Easy");
+        radioButtonMenuItem.addActionListener(e -> ((ControllerBombermanGame) controller).setDifficulty(1));
+        difficultyMenu.add(radioButtonMenuItem);
+        buttonGroup.add(radioButtonMenuItem);
+
+        radioButtonMenuItem = new JRadioButtonMenuItem("Medium");
+        radioButtonMenuItem.addActionListener(e -> ((ControllerBombermanGame) controller).setDifficulty(2));
+        difficultyMenu.add(radioButtonMenuItem);
+        buttonGroup.add(radioButtonMenuItem);
+
+        radioButtonMenuItem = new JRadioButtonMenuItem("Hard");
+        radioButtonMenuItem.setSelected(true);
+        radioButtonMenuItem.addActionListener(e -> ((ControllerBombermanGame) controller).setDifficulty(3));
+        difficultyMenu.add(radioButtonMenuItem);
+        buttonGroup.add(radioButtonMenuItem);
+
+        menuBar.add(difficultyMenu);
+
         frame.setJMenuBar(menuBar);
 
+        // Layout of the frame
         JPanel mainPanel = new JPanel(new GridLayout(2,1));
         frame.setContentPane(mainPanel);
 
@@ -160,9 +188,7 @@ public class ViewCommand extends Frame {
         getJFrame().setFocusable(true);
         getJFrame().addKeyListener(new KeyListener() {
             @Override
-            public void keyTyped(KeyEvent e) {
-
-            }
+            public void keyTyped(KeyEvent e) {}
 
             @Override
             public void keyPressed(KeyEvent e) {
@@ -193,9 +219,7 @@ public class ViewCommand extends Frame {
             }
 
             @Override
-            public void keyReleased(KeyEvent e) {
-
-            }
+            public void keyReleased(KeyEvent e) {}
         });
     }
 

@@ -13,11 +13,13 @@ public class BombermanGame extends Game {
     private ArrayList<InfoItem> itemList;
     private boolean[][] breakableWalls;
     private AgentAction bombermanAction;
+    private int difficulty;
 
     public BombermanGame(int maxTurn, int timeMs, InputMap map){
         super(maxTurn, timeMs);
         this.map = map;
         this.bombermanAction = AgentAction.STOP;
+        this.difficulty = 3;
     }
 
     public InputMap getMap() {
@@ -50,6 +52,14 @@ public class BombermanGame extends Game {
 
     public AgentAction getBombermanAction(){
         return bombermanAction;
+    }
+
+    public void setDifficulty(int difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public int getDifficulty() {
+        return difficulty;
     }
 
     @Override

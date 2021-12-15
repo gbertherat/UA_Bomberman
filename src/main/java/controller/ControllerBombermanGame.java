@@ -69,4 +69,8 @@ public class ControllerBombermanGame extends AbstractController{
     public void setBombermanAction(AgentAction action){
         this.bg.setBombermanAction(action);
     }
+
+    public void setDifficulty(int difficulty){
+        this.bg.setDifficulty(difficulty);
+    }
 }
