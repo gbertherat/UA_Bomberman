@@ -1,6 +1,6 @@
-package view.etat;
+package client.view.etat;
 
-import view.ViewCommand;
+import client.view.ViewCommand;
 
 public class EtatFinished implements CommandEtat {
     private ViewCommand vc;

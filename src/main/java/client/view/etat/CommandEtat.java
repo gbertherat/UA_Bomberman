@@ -1,4 +1,4 @@
-package view.etat;
+package client.view.etat;
 
 public interface CommandEtat {
     void play();

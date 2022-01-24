@@ -1,12 +1,12 @@
-package view;
+package client.view;
 
-import controller.AbstractController;
-import controller.ControllerBombermanGame;
+import server.controller.AbstractController;
+import server.controller.ControllerBombermanGame;
 import model.BombermanGame;
 import utils.AgentAction;
-import view.etat.CommandEtat;
-import view.etat.EtatCreated;
-import view.etat.EtatFinished;
+import client.view.etat.CommandEtat;
+import client.view.etat.EtatCreated;
+import client.view.etat.EtatFinished;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;

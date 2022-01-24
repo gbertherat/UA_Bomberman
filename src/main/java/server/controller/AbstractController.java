@@ -1,4 +1,4 @@
-package controller;
+package server.controller;
 
 public abstract class AbstractController {
     public abstract void restart();

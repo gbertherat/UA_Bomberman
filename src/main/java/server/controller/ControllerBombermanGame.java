@@ -1,11 +1,11 @@
-package controller;
+package server.controller;
 
 import model.BombermanGame;
 import model.InputMap;
 import utils.AgentAction;
-import view.ViewBombermanGame;
-import view.ViewCommand;
-import view.etat.EtatCreated;
+import client.view.ViewBombermanGame;
+import client.view.ViewCommand;
+import client.view.etat.EtatCreated;
 
 public class ControllerBombermanGame extends AbstractController{
     private final BombermanGame bg;

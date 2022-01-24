@@ -1,4 +1,4 @@
-package view;
+package client.view;
 
 import model.BombermanGame;
 import model.InputMap;
