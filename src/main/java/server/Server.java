@@ -1,5 +1,8 @@
 package server;
 
+import model.BombermanGame;
+import server.controller.ControllerBombermanGame;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -27,6 +30,7 @@ public class Server {
                 System.out.println("New user connected");
 
                 ServerClientThread clientThread = new ServerClientThread(socket, this);
+                arrayClientThreads.add(clientThread);
                 Thread thread = new Thread(clientThread);
                 thread.start();
 
@@ -41,7 +45,7 @@ public class Server {
         System.out.println("A client has left!");
     }
 
-    public void broadcast(/* DU JSON */ String msg) {
+    public void broadcast(String msg) {
         for (ServerClientThread sct : arrayClientThreads) {
             sct.sendJson(msg);
         }

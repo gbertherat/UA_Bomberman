@@ -13,6 +13,10 @@ public class ViewBombermanGame extends Frame{
     private PanelBomberman mainPanel;
     private InputMap map;
 
+    public PanelBomberman getPanel(){
+        return mainPanel;
+    }
+
     public void setMap(InputMap map){
         this.map = map;
     }

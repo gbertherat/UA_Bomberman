@@ -1,5 +1,9 @@
 package server;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,21 +20,24 @@ public class ServerClientThread implements Runnable {
         this.socket = socket;
         this.server = server;
         this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-        this.writer = new PrintWriter(socket.getOutputStream());
+        this.writer = new PrintWriter(socket.getOutputStream(), true);
     }
 
     @Override
     public void run() {
-
-        do {
-            break;
-        } while (true);
-
-        server.removeClient(this);
+        JSONParser parser = new JSONParser();
 
         try {
+            JSONObject jsonObj = null;
+            do {
+                jsonObj = (JSONObject) parser.parse(reader.readLine());
+                System.out.println("Received:" + jsonObj.toJSONString());
+                server.broadcast(jsonObj.toJSONString());
+            } while (jsonObj != null && jsonObj.get("status").equals("OK"));
+
+            server.removeClient(this);
             socket.close();
-        } catch (IOException e) {
+        } catch (IOException | ParseException e) {
             System.out.println("ServerClientThread error (run):\n" + e.getMessage());
         }
     }

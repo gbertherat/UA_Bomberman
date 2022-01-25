@@ -80,21 +80,21 @@ public class PanelBomberman extends JPanel {
             for (int y = 0; y < sizeY; y++) {
                 if (walls[x][y]) {
                     try {
-                        Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/wall.png")));
+                        Image img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("images/wall.png")));
                         g.drawImage(img, (int) position_x, (int) position_y, (int) stepx, (int) stepy, this);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 } else if (this.breakable_walls[x][y]) {
                     try {
-                        Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/brique_2.png")));
+                        Image img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("images/brique_2.png")));
                         g.drawImage(img, (int) position_x, (int) position_y, (int) stepx, (int) stepy, this);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 } else {
                     try {
-                        Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/grass.png")));
+                        Image img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("images/grass.png")));
                         g.drawImage(img, (int) position_x, (int) position_y, (int) stepx, (int) stepy, this);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -148,9 +148,9 @@ public class PanelBomberman extends JPanel {
 
         try {
             if (infoAgent.getType() == 'R') {
-                img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/" + infoAgent.getType() + direction + this.cpt % 2 + ".png")));
+                img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("images/" + infoAgent.getType() + direction + this.cpt % 2 + ".png")));
             } else {
-                img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/" + infoAgent.getType() + direction + this.cpt % 3 + ".png")));
+                img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("images/" + infoAgent.getType() + direction + this.cpt % 3 + ".png")));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -208,7 +208,7 @@ public class PanelBomberman extends JPanel {
 
         if (item.getType() == ItemType.FIRE_UP) {
             try {
-                Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/Item_FireUp.png")));
+                Image img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("images/Item_FireUp.png")));
                 g.drawImage(img, (int) pos_x, (int) pos_y, (int) stepx, (int) stepy, this);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -216,7 +216,7 @@ public class PanelBomberman extends JPanel {
         }
         if (item.getType() == ItemType.FIRE_DOWN) {
             try {
-                Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/Item_FireDown.png")));
+                Image img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("images/Item_FireDown.png")));
                 g.drawImage(img, (int) pos_x, (int) pos_y, (int) stepx, (int) stepy, this);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -224,7 +224,7 @@ public class PanelBomberman extends JPanel {
         }
         if (item.getType() == ItemType.FIRE_SUIT) {
             try {
-                Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/Item_FireSuit.png")));
+                Image img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("images/Item_FireSuit.png")));
                 g.drawImage(img, (int) pos_x, (int) pos_y, (int) stepx, (int) stepy, this);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -232,7 +232,7 @@ public class PanelBomberman extends JPanel {
         }
         if (item.getType() == ItemType.SKULL) {
             try {
-                Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/Item_Skull.png")));
+                Image img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("images/Item_Skull.png")));
                 g.drawImage(img, (int) pos_x, (int) pos_y, (int) stepx, (int) stepy, this);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -251,7 +251,7 @@ public class PanelBomberman extends JPanel {
         if (bomb.getStateBomb() == StateBomb.Step0) {
 
             try {
-                Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/Bomb_0.png")));
+                Image img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("images/Bomb_0.png")));
                 g.drawImage(img, (int) pos_x, (int) pos_y, (int) stepx, (int) stepy, this);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -259,7 +259,7 @@ public class PanelBomberman extends JPanel {
         } else if (bomb.getStateBomb() == StateBomb.Step1) {
 
             try {
-                Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/Bomb_0.png")));
+                Image img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("images/Bomb_0.png")));
                 g.drawImage(img, (int) pos_x, (int) pos_y, (int) stepx, (int) stepy, this);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -267,7 +267,7 @@ public class PanelBomberman extends JPanel {
         } else if (bomb.getStateBomb() == StateBomb.Step2) {
 
             try {
-                Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/Bomb_1_jaune.png")));
+                Image img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("images/Bomb_1_jaune.png")));
                 g.drawImage(img, (int) pos_x, (int) pos_y, (int) stepx, (int) stepy, this);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -275,7 +275,7 @@ public class PanelBomberman extends JPanel {
         } else if (bomb.getStateBomb() == StateBomb.Step3) {
 
             try {
-                Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/Bomb_2_rouge.png")));
+                Image img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("images/Bomb_2_rouge.png")));
                 g.drawImage(img, (int) pos_x, (int) pos_y, (int) stepx, (int) stepy, this);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -284,7 +284,7 @@ public class PanelBomberman extends JPanel {
         } else if (bomb.getStateBomb() == StateBomb.Boom) {
 
             try {
-                Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/Range_CENTRE.png")));
+                Image img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("images/Range_CENTRE.png")));
                 g.drawImage(img, (int) pos_x, (int) pos_y, (int) stepx, (int) stepy, this);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -299,14 +299,14 @@ public class PanelBomberman extends JPanel {
                 if (py + i < sizeY) {
                     if (i == range) {
                         try {
-                            Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/Range_SOUTH_Fin.png")));
+                            Image img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("images/Range_SOUTH_Fin.png")));
                             g.drawImage(img, (int) pos_x, (int) (pos_y + (stepy * i)), (int) stepx, (int) stepy, this);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     } else {
                         try {
-                            Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/Range_SOUTH.png")));
+                            Image img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("images/Range_SOUTH.png")));
                             g.drawImage(img, (int) pos_x, (int) (pos_y + (stepy * i)), (int) stepx, (int) stepy, this);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -324,14 +324,14 @@ public class PanelBomberman extends JPanel {
                 if (py - i >= 0) {
                     if (i == range) {
                         try {
-                            Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/Range_NORTH_Fin.png")));
+                            Image img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("images/Range_NORTH_Fin.png")));
                             g.drawImage(img, (int) pos_x, (int) (pos_y - (stepy * i)), (int) stepx, (int) stepy, this);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     } else {
                         try {
-                            Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/Range_NORTH.png")));
+                            Image img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("images/Range_NORTH.png")));
                             g.drawImage(img, (int) pos_x, (int) (pos_y - (stepy * i)), (int) stepx, (int) stepy, this);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -348,14 +348,14 @@ public class PanelBomberman extends JPanel {
                 if (px + i < sizeX) {
                     if (i == range) {
                         try {
-                            Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/Range_EAST_Fin.png")));
+                            Image img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("images/Range_EAST_Fin.png")));
                             g.drawImage(img, (int) (pos_x + (stepy * i)), (int) (pos_y), (int) stepx, (int) stepy, this);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     } else {
                         try {
-                            Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/Range_EAST.png")));
+                            Image img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("images/Range_EAST.png")));
                             g.drawImage(img, (int) (pos_x + (stepy * i)), (int) (pos_y), (int) stepx, (int) stepy, this);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -371,14 +371,14 @@ public class PanelBomberman extends JPanel {
                 if (px - i >= 0) {
                     if (i == range) {
                         try {
-                            Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/Range_WEST_Fin.png")));
+                            Image img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("images/Range_WEST_Fin.png")));
                             g.drawImage(img, (int) (pos_x - (stepy * i)), (int) (pos_y), (int) stepx, (int) stepy, this);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     } else {
                         try {
-                            Image img = ImageIO.read(Objects.requireNonNull(getClass().getResource("../images/Range_WEST.png")));
+                            Image img = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("images/Range_WEST.png")));
                             g.drawImage(img, (int) (pos_x - (stepy * i)), (int) (pos_y), (int) stepx, (int) stepy, this);
                         } catch (IOException e) {
                             e.printStackTrace();
