@@ -14,9 +14,7 @@ public abstract class Frame implements Observer {
         return jFrame;
     }
 
-    public void init(int width, int height, int yoffset){
-        jFrame = new JFrame();
-        jFrame.setTitle("Game");
+    public void updateSize(int width, int height, int yoffset){
         jFrame.setSize(new Dimension(width, height));
         Dimension windowSize = jFrame.getSize();
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -24,6 +22,12 @@ public abstract class Frame implements Observer {
         int dx = centerPoint.x - windowSize.width/2;
         int dy = centerPoint.y - windowSize.height/2 + yoffset;
         jFrame.setLocation(dx, dy);
+    }
+
+    public void init(int width, int height, int yoffset){
+        jFrame = new JFrame();
+        jFrame.setTitle("Game");
+        updateSize(width, height, yoffset);
     }
 
     public Image getImage(String foldername, String imagename){

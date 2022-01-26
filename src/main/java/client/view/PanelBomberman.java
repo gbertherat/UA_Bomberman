@@ -1,5 +1,6 @@
 package client.view;
 
+import lombok.Getter;
 import utils.*;
 
 import javax.imageio.ImageIO;
@@ -16,7 +17,7 @@ import java.util.Objects;
  * Classe qui permet de charger d'afficher le panneau du jeu à partir d'une carte et de listes d'agents avec leurs positions.
  */
 
-
+@Getter
 public class PanelBomberman extends JPanel {
 
     private static final long serialVersionUID = 1L;

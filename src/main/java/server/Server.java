@@ -27,12 +27,11 @@ public class Server {
         while (true) {
             try {
                 Socket socket = sSocket.accept();
-                System.out.println("New user connected");
-
                 ServerClientThread clientThread = new ServerClientThread(socket, this);
                 arrayClientThreads.add(clientThread);
                 Thread thread = new Thread(clientThread);
                 thread.start();
+                System.out.println("New user connected");
 
             } catch (IOException e) {
                 System.out.println("Server error (acceptConnection):\n" + e.getMessage());

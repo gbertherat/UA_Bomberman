@@ -25,14 +25,14 @@ public class ClientWriter extends Thread {
     public void run() {
 
         do {
-            writer.println("{" +
-                    "\"status\":\"OK\"," +
-                    "\"message\":\"Test\"," +
-                    "\"players\":[]," +
-                    "\"walls\":[]," +
-                    "\"bombs\":[]," +
-                    "\"items\":[]," +
-                    "}");
+//            writer.println("{" +
+//                    "\"status\":\"OK\"," +
+//                    "\"message\":\"Test\"," +
+//                    "\"players\":[]," +
+//                    "\"walls\":[]," +
+//                    "\"bombs\":[]," +
+//                    "\"items\":[]," +
+//                    "}");
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

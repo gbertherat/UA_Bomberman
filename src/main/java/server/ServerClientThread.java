@@ -28,16 +28,28 @@ public class ServerClientThread implements Runnable {
         JSONParser parser = new JSONParser();
 
         try {
-            JSONObject jsonObj = null;
             do {
-                jsonObj = (JSONObject) parser.parse(reader.readLine());
-                System.out.println("Received:" + jsonObj.toJSONString());
-                server.broadcast(jsonObj.toJSONString());
-            } while (jsonObj != null && jsonObj.get("status").equals("OK"));
+                String json = "{" +
+                        "\"status\":\"OK\"," +
+                        "\"message\":\"Envoie de test\"," +
+                        "\"layout\":\"niveau3.lay\"," +
+                        "\"walls\":[" +
+                            "{" +
+                                "\"x\":3" +
+                                "\"y\":3" +
+                            "}," +
+                        "]," +
+                        "\"players\":[]," +
+                        "\"bombs\":[]," +
+                        "\"items\":[]," +
+                        "}";
+                server.broadcast(json);
+                Thread.sleep(1000);
+            } while (socket.isConnected());
 
             server.removeClient(this);
             socket.close();
-        } catch (IOException | ParseException e) {
+        } catch (IOException | InterruptedException e) {
             System.out.println("ServerClientThread error (run):\n" + e.getMessage());
         }
     }

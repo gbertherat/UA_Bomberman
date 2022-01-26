@@ -21,18 +21,27 @@ public class ViewBombermanGame extends Frame{
         this.map = map;
     }
 
+    public InputMap getMap() {
+        return map;
+    }
+
     public void restart(){
-        mainPanel.updateInfoGame(
+        super.updateSize(map.get_walls().length*48,map.get_walls()[0].length*48,-100);
+        int cols = map.get_walls()[0].length;
+        int rows = map.get_walls().length;
+        mainPanel = new PanelBomberman(rows,
+                cols,
+                map.get_walls(),
                 map.getStart_breakable_walls(),
-                map.getStart_agents(),
-                new ArrayList<>(),
-                new ArrayList<>());
+                map.getStart_agents());
+        frame.setContentPane(mainPanel);
         mainPanel.repaint();
+        frame.repaint();
     }
 
     @Override
     public void init(int width, int height, int yoffset) {
-        super.init(width, height, yoffset);
+        super.init(map.get_walls().length*48,map.get_walls()[0].length*48,-100);
         frame = super.getJFrame();
         int cols = map.get_walls()[0].length;
         int rows = map.get_walls().length;

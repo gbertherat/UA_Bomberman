@@ -38,7 +38,8 @@ public class ClientReader extends Thread {
                 if((line = reader.readLine()) != null) {
                     JSONObject jsonObj = (JSONObject) parser.parse(line);
                     if (jsonObj.get("status") != null && jsonObj.get("status").equals("OK")) {
-
+                        JsonClient jClient = new JsonClient(view, jsonObj);
+                        jClient.updateView();
                     }
                 }
                 Thread.sleep(1000);
