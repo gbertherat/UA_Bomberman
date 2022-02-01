@@ -34,7 +34,8 @@ public class Server {
                 System.out.println("New user connected");
 
             } catch (IOException e) {
-                System.out.println("Server error (acceptConnection):\n" + e.getMessage());
+                System.out.println("Server error (acceptConnection):");
+                e.printStackTrace();
             }
         }
     }
@@ -55,7 +56,8 @@ public class Server {
             Server server = new Server();
             server.execute();
         } catch (IOException e) {
-            System.out.println("Server error (main):\n" + e.getMessage());
+            System.out.println("Server error (main):");
+            e.printStackTrace();
         }
     }
 }

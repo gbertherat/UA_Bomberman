@@ -1,7 +1,6 @@
 package client.thread;
 
 import client.Client;
-import client.view.PanelBomberman;
 import client.view.ViewBombermanGame;
 import utils.AgentAction;
 
@@ -14,18 +13,27 @@ public class ClientWriter extends Thread {
     private final Client client;
     private final PrintWriter writer;
     private final ViewBombermanGame view;
+    private boolean exit;
 
     public ClientWriter(Socket socket, Client client, ViewBombermanGame view) throws IOException {
         this.socket = socket;
         this.client = client;
         writer = new PrintWriter(socket.getOutputStream(), true);
         this.view = view;
+        this.exit = false;
+    }
+
+    public void setExit(boolean exit) {
+        this.exit = exit;
+    }
+
+    public boolean getExit() {
+        return exit;
     }
 
     @Override
     public void run() {
-
-        do {
+        while (socket.isConnected() && !exit) {
             writer.println(view.getAction().toString());
             view.setAction(AgentAction.STOP);
             try {
@@ -33,13 +41,6 @@ public class ClientWriter extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
-        } while (!socket.isClosed());
-
-        try {
-            socket.close();
-        } catch (IOException e) {
-            System.out.println("ClientWriter error (run):\n" + e.getMessage());
         }
     }
 }

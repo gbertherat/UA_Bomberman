@@ -74,23 +74,22 @@ public class ServerClientThread implements Runnable {
                 "\"type\":\"FIRE_UP\"" +
                 "\"state\":\"true\"" +
                 "}" +
-                "]," +
+                "]" +
                 "}";
         server.broadcast(json);
 
         try {
-            do {
+            while (!socket.isConnected()){
                 String line;
                 if((line = reader.readLine()) != null){
-                    server.broadcast(line);
+                    System.out.println(line);
                 }
                 Thread.sleep(1000);
-            } while (socket.isConnected());
-
-            server.removeClient(this);
-            socket.close();
+            }
         } catch (IOException | InterruptedException e) {
-            System.out.println("ServerClientThread error (run):\n" + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            server.removeClient(this);
         }
     }
 

@@ -2,14 +2,14 @@ package client;
 
 import client.thread.ClientReader;
 import client.thread.ClientWriter;
-import client.view.PanelBomberman;
 import client.view.ViewBombermanGame;
 import lombok.Getter;
 import lombok.Setter;
 import model.InputMap;
-import server.controller.AbstractController;
-import server.controller.ControllerBombermanGame;
 
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URISyntaxException;
@@ -43,11 +43,13 @@ public class Client {
         clientReader.start();
     }
 
-    public void killProcess(ClientReader r, ClientWriter w) {
-        r.interrupt();
-        w.interrupt();
+    public void disconnect(){
+        view.getJFrame().dispatchEvent(new WindowEvent(view.getJFrame(), WindowEvent.WINDOW_CLOSING));
+    }
 
-        System.exit(1);
+    public void killProcess() {
+        clientWriter.setExit(true);
+        clientReader.setExit(true);
     }
 
     public static void main(String[] args) throws URISyntaxException {
@@ -58,12 +60,29 @@ public class Client {
             ViewBombermanGame view = new ViewBombermanGame();
             InputMap map = new InputMap(url.toURI().getPath());
             view.setMap(map);
-            view.init(map.get_walls().length*48,map.get_walls()[0].length*48,-100);
+            view.init(map.get_walls().length * 48, map.get_walls()[0].length * 48, -100);
 
             Client client = new Client("127.0.0.1", 1664, view);
             client.execute();
+
+            view.getJFrame().addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent windowEvent) {
+                    try {
+                        client.killProcess();
+                        client.getSocket().close();
+
+                        System.exit(0);
+                    } catch (IOException e) {
+                        System.out.println("windowClosing error :");
+                        e.printStackTrace();
+                    }
+                }
+            });
+
         } catch (IOException e) {
-            System.out.println("Client error (main):\n" + e.getMessage());
+            System.out.println("Client error (main):");
+            e.printStackTrace();
         }
     }
 }

@@ -32,7 +32,7 @@ public abstract class Frame implements Observer {
 
     public Image getImage(String foldername, String imagename){
         try {
-            return ImageIO.read(Objects.requireNonNull(getClass().getResource("../" + foldername + "/" + imagename)));
+            return ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource(foldername + "/" + imagename)));
         } catch (IOException e) {
             e.printStackTrace();
         }
