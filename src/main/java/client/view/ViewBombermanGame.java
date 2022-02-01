@@ -2,9 +2,13 @@ package client.view;
 
 import model.BombermanGame;
 import model.InputMap;
+import server.controller.ControllerBombermanGame;
+import utils.AgentAction;
 import utils.InfoAgent;
 
 import javax.swing.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Observable;
 
@@ -12,6 +16,7 @@ public class ViewBombermanGame extends Frame{
     private JFrame frame;
     private PanelBomberman mainPanel;
     private InputMap map;
+    private AgentAction action;
 
     public PanelBomberman getPanel(){
         return mainPanel;
@@ -23,6 +28,14 @@ public class ViewBombermanGame extends Frame{
 
     public InputMap getMap() {
         return map;
+    }
+
+    public AgentAction getAction() {
+        return action;
+    }
+
+    public void setAction(AgentAction action) {
+        this.action = action;
     }
 
     public void restart(){
@@ -52,7 +65,44 @@ public class ViewBombermanGame extends Frame{
                 map.getStart_agents());
         frame.setContentPane(mainPanel);
         frame.setVisible(true);
-        frame.setFocusable(false);
+        frame.setFocusable(true);
+        this.action = AgentAction.STOP;
+        frame.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {}
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                AgentAction action = AgentAction.STOP;
+                switch(e.getKeyCode()){
+                    case KeyEvent.VK_UP:
+                    case KeyEvent.VK_Z:
+                        action = AgentAction.MOVE_UP;
+                        break;
+                    case KeyEvent.VK_DOWN:
+                    case KeyEvent.VK_S:
+                        action = AgentAction.MOVE_DOWN;
+                        break;
+                    case KeyEvent.VK_LEFT:
+                    case KeyEvent.VK_Q:
+                        action = AgentAction.MOVE_LEFT;
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                    case KeyEvent.VK_D:
+                        action = AgentAction.MOVE_RIGHT;
+                        break;
+                    case KeyEvent.VK_SPACE:
+                    case KeyEvent.VK_E:
+                        action = AgentAction.PUT_BOMB;
+                        break;
+                }
+
+                setAction(action);
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {}
+        });
     }
 
     public void close(){

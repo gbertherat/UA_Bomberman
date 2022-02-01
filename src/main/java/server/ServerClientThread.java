@@ -25,25 +25,65 @@ public class ServerClientThread implements Runnable {
 
     @Override
     public void run() {
-        JSONParser parser = new JSONParser();
+        String json = "{" +
+                "\"status\":\"OK\"," +
+                "\"message\":\"Envoie de test\"," +
+                "\"layout\":\"niveau3.lay\"," +
+                "\"walls\":[" +
+                "{" +
+                "\"x\":3," +
+                "\"y\":3" +
+                "}," +
+                "]," +
+                "\"players\":[" +
+                "{" +
+                "\"x\":3," +
+                "\"y\":3," +
+                "\"type\":\"B\"," +
+                "\"action\":\"MOVE_DOWN\"," +
+                "\"canFly\":\"false\"," +
+                "\"isActive\":\"true\"," +
+                "\"isAlive\":\"true\"," +
+                "\"isInvincible\":\"false\"," +
+                "\"isSick\":\"false\"," +
+                "}," +
+                "{" +
+                "\"x\":3," +
+                "\"y\":6," +
+                "\"type\":\"R\"," +
+                "\"action\":\"MOVE_UP\"," +
+                "\"canFly\":\"false\"," +
+                "\"isActive\":\"true\"," +
+                "\"isAlive\":\"true\"," +
+                "\"isInvincible\":\"false\"," +
+                "\"isSick\":\"false\"," +
+                "}" +
+                "]," +
+                "\"bombs\":[" +
+                "{" +
+                "\"x\":3," +
+                "\"y\":4," +
+                "\"range\":3," +
+                "\"state\":\"Step3\"" +
+                "}" +
+                "]," +
+                "\"items\":[" +
+                "{" +
+                "\"x\":4," +
+                "\"y\":4," +
+                "\"type\":\"FIRE_UP\"" +
+                "\"state\":\"true\"" +
+                "}" +
+                "]," +
+                "}";
+        server.broadcast(json);
 
         try {
             do {
-                String json = "{" +
-                        "\"status\":\"OK\"," +
-                        "\"message\":\"Envoie de test\"," +
-                        "\"layout\":\"niveau3.lay\"," +
-                        "\"walls\":[" +
-                            "{" +
-                                "\"x\":3" +
-                                "\"y\":3" +
-                            "}," +
-                        "]," +
-                        "\"players\":[]," +
-                        "\"bombs\":[]," +
-                        "\"items\":[]," +
-                        "}";
-                server.broadcast(json);
+                String line;
+                if((line = reader.readLine()) != null){
+                    server.broadcast(line);
+                }
                 Thread.sleep(1000);
             } while (socket.isConnected());
 

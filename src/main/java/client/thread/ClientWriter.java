@@ -3,6 +3,7 @@ package client.thread;
 import client.Client;
 import client.view.PanelBomberman;
 import client.view.ViewBombermanGame;
+import utils.AgentAction;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -25,14 +26,8 @@ public class ClientWriter extends Thread {
     public void run() {
 
         do {
-//            writer.println("{" +
-//                    "\"status\":\"OK\"," +
-//                    "\"message\":\"Test\"," +
-//                    "\"players\":[]," +
-//                    "\"walls\":[]," +
-//                    "\"bombs\":[]," +
-//                    "\"items\":[]," +
-//                    "}");
+            writer.println(view.getAction().toString());
+            view.setAction(AgentAction.STOP);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

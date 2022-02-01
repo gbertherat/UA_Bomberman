@@ -184,43 +184,6 @@ public class ViewCommand extends Frame {
 
         frame.setVisible(true);
         setEtat(new EtatCreated(this));
-
-        getJFrame().setFocusable(true);
-        getJFrame().addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {}
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                AgentAction action = AgentAction.STOP;
-                switch(e.getKeyCode()){
-                    case KeyEvent.VK_UP:
-                    case KeyEvent.VK_Z:
-                        action = AgentAction.MOVE_UP;
-                        break;
-                    case KeyEvent.VK_DOWN:
-                    case KeyEvent.VK_S:
-                        action = AgentAction.MOVE_DOWN;
-                        break;
-                    case KeyEvent.VK_LEFT:
-                    case KeyEvent.VK_Q:
-                        action = AgentAction.MOVE_LEFT;
-                        break;
-                    case KeyEvent.VK_RIGHT:
-                    case KeyEvent.VK_D:
-                        action = AgentAction.MOVE_RIGHT;
-                        break;
-                    case KeyEvent.VK_SPACE:
-                    case KeyEvent.VK_E:
-                        action = AgentAction.PUT_BOMB;
-                        break;
-                }
-                ((ControllerBombermanGame) controller).setBombermanAction(action);
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {}
-        });
     }
 
     public void setTurnLabel(String turnNo){
