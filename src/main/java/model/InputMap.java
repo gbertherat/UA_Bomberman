@@ -5,6 +5,8 @@ import utils.ColorAgent;
 import utils.InfoAgent;
 
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -28,8 +30,11 @@ public class InputMap implements Serializable {
     public InputMap(String filename) {
         this.filename = filename;
 
+        URL url = getClass().getClassLoader().getResource("layouts/" + filename);
+        assert url != null;
+
         try {
-            InputStream flux = new FileInputStream(filename);
+            InputStream flux = new FileInputStream(url.toURI().getPath());
             InputStreamReader lecture = new InputStreamReader(flux);
             buffer = new BufferedReader(lecture);
 
@@ -54,7 +59,7 @@ public class InputMap implements Serializable {
             walls = new boolean[size_x][size_y];
             start_breakable_walls = new boolean[size_x][size_y];
 
-            flux = new FileInputStream(filename);
+            flux = new FileInputStream(url.toURI().getPath());
             lecture = new InputStreamReader(flux);
             buffer = new BufferedReader(lecture);
             int y = 0;

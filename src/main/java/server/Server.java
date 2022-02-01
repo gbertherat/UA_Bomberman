@@ -1,21 +1,43 @@
 package server;
 
+import controller.DefaultSpeed;
 import model.BombermanGame;
-import server.controller.ControllerBombermanGame;
+import model.InputMap;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class Server {
 
     private final ServerSocket sSocket;
     private ArrayList<ServerClientThread> arrayClientThreads;
+    private BombermanGame game;
+    private JsonServer jServer;
 
     public Server() throws IOException {
         arrayClientThreads = new ArrayList<>();
         this.sSocket = new ServerSocket(1664);
+
+        this.game = new BombermanGame(1024, DefaultSpeed.value, new InputMap("niveau2.lay"));
+        this.game.init();
+
+        this.jServer = new JsonServer(this, game);
+    }
+
+    public BombermanGame getGame() {
+        return game;
+    }
+
+    public InputMap getMap(){
+        return game.getMap();
+    }
+
+    public JsonServer getjServer() {
+        return jServer;
     }
 
     public void execute() {

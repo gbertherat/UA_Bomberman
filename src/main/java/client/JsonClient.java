@@ -25,18 +25,8 @@ public class JsonClient {
 
     // RECUPERER LES INFOS EN PROVENANCE DU SERVEUR
     public InputMap retrieveLayout(){
-        String layout = (String) data.get("layout");
-        URL url = JsonClient.class.getClassLoader().getResource("layouts/"+layout);
-
-        InputMap map = null;
-        try {
-            assert url != null;
-            map = new InputMap(url.toURI().getPath());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
-        return map;
+        String map = (String) data.get("map");
+        return new InputMap(map);
     }
 
     public boolean[][] retrieveWalls() {

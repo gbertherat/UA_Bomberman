@@ -1,5 +1,5 @@
-import server.controller.AbstractController;
-import server.controller.ControllerBombermanGame;
+import controller.AbstractController;
+import controller.ControllerBombermanGame;
 
 import java.net.URISyntaxException;
 import java.net.URL;

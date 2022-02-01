@@ -40,7 +40,7 @@ public class ClientReader extends Thread {
         // Réception du JSON
         JSONParser parser = new JSONParser();
         try {
-            while (socket.isConnected() && !exit) {
+            while (true) {
                 String line;
                 if ((line = reader.readLine()) != null) {
                     JSONObject jsonObj = (JSONObject) parser.parse(line);

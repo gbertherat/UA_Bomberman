@@ -52,13 +52,10 @@ public class Client {
         clientReader.setExit(true);
     }
 
-    public static void main(String[] args) throws URISyntaxException {
+    public static void main(String[] args) {
         try {
-            URL url = Client.class.getClassLoader().getResource("layouts/niveau3.lay");
-            assert url != null;
-
             ViewBombermanGame view = new ViewBombermanGame();
-            InputMap map = new InputMap(url.toURI().getPath());
+            InputMap map = new InputMap("niveau3.lay");
             view.setMap(map);
             view.init(map.get_walls().length * 48, map.get_walls()[0].length * 48, -100);
 

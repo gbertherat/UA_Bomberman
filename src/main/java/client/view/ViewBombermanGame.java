@@ -2,7 +2,6 @@ package client.view;
 
 import model.BombermanGame;
 import model.InputMap;
-import server.controller.ControllerBombermanGame;
 import utils.AgentAction;
 import utils.InfoAgent;
 

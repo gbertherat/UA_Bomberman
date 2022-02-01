@@ -25,65 +25,67 @@ public class ServerClientThread implements Runnable {
 
     @Override
     public void run() {
-        String json = "{" +
-                "\"status\":\"OK\"," +
-                "\"message\":\"Envoie de test\"," +
-                "\"layout\":\"niveau3.lay\"," +
-                "\"walls\":[" +
-                "{" +
-                "\"x\":3," +
-                "\"y\":3" +
-                "}," +
-                "]," +
-                "\"players\":[" +
-                "{" +
-                "\"x\":3," +
-                "\"y\":3," +
-                "\"type\":\"B\"," +
-                "\"action\":\"MOVE_DOWN\"," +
-                "\"canFly\":\"false\"," +
-                "\"isActive\":\"true\"," +
-                "\"isAlive\":\"true\"," +
-                "\"isInvincible\":\"false\"," +
-                "\"isSick\":\"false\"," +
-                "}," +
-                "{" +
-                "\"x\":3," +
-                "\"y\":6," +
-                "\"type\":\"R\"," +
-                "\"action\":\"MOVE_UP\"," +
-                "\"canFly\":\"false\"," +
-                "\"isActive\":\"true\"," +
-                "\"isAlive\":\"true\"," +
-                "\"isInvincible\":\"false\"," +
-                "\"isSick\":\"false\"," +
-                "}" +
-                "]," +
-                "\"bombs\":[" +
-                "{" +
-                "\"x\":3," +
-                "\"y\":4," +
-                "\"range\":3," +
-                "\"state\":\"Step3\"" +
-                "}" +
-                "]," +
-                "\"items\":[" +
-                "{" +
-                "\"x\":4," +
-                "\"y\":4," +
-                "\"type\":\"FIRE_UP\"" +
-                "\"state\":\"true\"" +
-                "}" +
-                "]" +
-                "}";
-        server.broadcast(json);
-
+//        String json = "{" +
+//                "\"status\":\"OK\"," +
+//                "\"message\":\"Envoie de test\"," +
+//                "\"layout\":\"niveau3.lay\"," +
+//                "\"walls\":[" +
+//                "{" +
+//                "\"x\":3," +
+//                "\"y\":3" +
+//                "}," +
+//                "]," +
+//                "\"players\":[" +
+//                "{" +
+//                "\"x\":3," +
+//                "\"y\":3," +
+//                "\"type\":\"B\"," +
+//                "\"action\":\"MOVE_DOWN\"," +
+//                "\"canFly\":\"false\"," +
+//                "\"isActive\":\"true\"," +
+//                "\"isAlive\":\"true\"," +
+//                "\"isInvincible\":\"false\"," +
+//                "\"isSick\":\"false\"," +
+//                "}," +
+//                "{" +
+//                "\"x\":3," +
+//                "\"y\":6," +
+//                "\"type\":\"R\"," +
+//                "\"action\":\"MOVE_UP\"," +
+//                "\"canFly\":\"false\"," +
+//                "\"isActive\":\"true\"," +
+//                "\"isAlive\":\"true\"," +
+//                "\"isInvincible\":\"false\"," +
+//                "\"isSick\":\"false\"," +
+//                "}" +
+//                "]," +
+//                "\"bombs\":[" +
+//                "{" +
+//                "\"x\":3," +
+//                "\"y\":4," +
+//                "\"range\":3," +
+//                "\"state\":\"Step3\"" +
+//                "}" +
+//                "]," +
+//                "\"items\":[" +
+//                "{" +
+//                "\"x\":4," +
+//                "\"y\":4," +
+//                "\"type\":\"FIRE_UP\"" +
+//                "\"state\":\"true\"" +
+//                "}" +
+//                "]" +
+//                "}";
+//        server.broadcast(json);
+        JSONParser parser = new JSONParser();
         try {
-            while (!socket.isConnected()){
-                String line;
-                if((line = reader.readLine()) != null){
-                    System.out.println(line);
-                }
+            while (socket.isConnected()){
+                String obj = reader.readLine();
+
+                String json = server.getjServer().sendJson(obj);
+                System.out.println(json);
+                server.broadcast(json);
+
                 Thread.sleep(1000);
             }
         } catch (IOException | InterruptedException e) {

@@ -1,4 +1,4 @@
-package server.controller;
+package controller;
 
 import model.BombermanGame;
 import model.InputMap;

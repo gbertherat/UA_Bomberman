@@ -1,9 +1,8 @@
 package client.view;
 
-import server.controller.AbstractController;
-import server.controller.ControllerBombermanGame;
+import controller.AbstractController;
+import controller.ControllerBombermanGame;
 import model.BombermanGame;
-import utils.AgentAction;
 import client.view.etat.CommandEtat;
 import client.view.etat.EtatCreated;
 import client.view.etat.EtatFinished;
@@ -11,8 +10,6 @@ import client.view.etat.EtatFinished;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.Observable;
 
