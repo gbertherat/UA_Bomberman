@@ -49,6 +49,7 @@ public class Server {
         while (true) {
             try {
                 Socket socket = sSocket.accept();
+                jServer.getState().setDoSendJson(true);
                 ServerClientThread clientThread = new ServerClientThread(socket, this);
                 arrayClientThreads.add(clientThread);
                 Thread thread = new Thread(clientThread);

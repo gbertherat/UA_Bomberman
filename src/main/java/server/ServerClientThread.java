@@ -3,12 +3,16 @@ package server;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import utils.AgentAction;
+import utils.ColorAgent;
+import utils.InfoAgent;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Random;
 
 public class ServerClientThread implements Runnable {
     private final Socket socket;
@@ -25,68 +29,19 @@ public class ServerClientThread implements Runnable {
 
     @Override
     public void run() {
-//        String json = "{" +
-//                "\"status\":\"OK\"," +
-//                "\"message\":\"Envoie de test\"," +
-//                "\"layout\":\"niveau3.lay\"," +
-//                "\"walls\":[" +
-//                "{" +
-//                "\"x\":3," +
-//                "\"y\":3" +
-//                "}," +
-//                "]," +
-//                "\"players\":[" +
-//                "{" +
-//                "\"x\":3," +
-//                "\"y\":3," +
-//                "\"type\":\"B\"," +
-//                "\"action\":\"MOVE_DOWN\"," +
-//                "\"canFly\":\"false\"," +
-//                "\"isActive\":\"true\"," +
-//                "\"isAlive\":\"true\"," +
-//                "\"isInvincible\":\"false\"," +
-//                "\"isSick\":\"false\"," +
-//                "}," +
-//                "{" +
-//                "\"x\":3," +
-//                "\"y\":6," +
-//                "\"type\":\"R\"," +
-//                "\"action\":\"MOVE_UP\"," +
-//                "\"canFly\":\"false\"," +
-//                "\"isActive\":\"true\"," +
-//                "\"isAlive\":\"true\"," +
-//                "\"isInvincible\":\"false\"," +
-//                "\"isSick\":\"false\"," +
-//                "}" +
-//                "]," +
-//                "\"bombs\":[" +
-//                "{" +
-//                "\"x\":3," +
-//                "\"y\":4," +
-//                "\"range\":3," +
-//                "\"state\":\"Step3\"" +
-//                "}" +
-//                "]," +
-//                "\"items\":[" +
-//                "{" +
-//                "\"x\":4," +
-//                "\"y\":4," +
-//                "\"type\":\"FIRE_UP\"" +
-//                "\"state\":\"true\"" +
-//                "}" +
-//                "]" +
-//                "}";
-//        server.broadcast(json);
         try {
             while (!socket.isClosed()){
                 String obj = reader.readLine();
 
-                if(obj.equals("KILL")){
+                if(obj.equals("EXIT")){
                     socket.close();
                 } else {
                     String json = server.getjServer().sendJson(obj);
-                    System.out.println(json);
-                    server.broadcast(json);
+
+                    if(json != null){
+                        System.out.println(json);
+                        writer.println(json);
+                    }
 
                     Thread.sleep(2000);
                 }

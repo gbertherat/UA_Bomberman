@@ -11,7 +11,6 @@ public class InfoItem {
         this.x = x;
         this.y = y;
         this.type = type;
-
     }
 
     public int getX() {
@@ -39,12 +38,12 @@ public class InfoItem {
     }
 
     @Override
-    public String toString(){
-
-
-        return "";
-
-
+    public String toString() {
+        return "{" +
+                "\"x\":" + x + "," +
+                "\"y\":" + y + "," +
+                "\"type\":\"" + type + "\"," +
+                "},";
     }
 }
 	

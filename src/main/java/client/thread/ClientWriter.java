@@ -42,6 +42,6 @@ public class ClientWriter extends Thread {
                 e.printStackTrace();
             }
         }
-        writer.println("KILL");
+        writer.println("EXIT");
     }
 }

@@ -72,22 +72,23 @@ public class BombermanGame extends Game {
         for(AgentType type: AgentType.values()){
             this.characterMap.put(type.getChar(), new ArrayList<>());
         }
-        for(InfoAgent agent: map.getStart_agents()){
-            switch(agent.getType()){
-                case 'B':
-                    boolean isAI = characterMap.get(agent.getType()).size() != 0;
-                    characterMap.get(agent.getType()).add(0, new Bomberman(agent.getX(), agent.getY(), this, isAI));
-                    break;
-                case 'V':
-                    characterMap.get(agent.getType()).add(new Bird(agent.getX(), agent.getY(), this, true));
-                    break;
-                case 'E':
-                    characterMap.get(agent.getType()).add(new Rajion(agent.getX(), agent.getY(), this, true));
-                    break;
-                case 'R':
-                    characterMap.get(agent.getType()).add(new Enemy(agent.getX(), agent.getY(), this, true));
-                    break;
-            }
+    }
+
+    public void addAgent(InfoAgent agent, boolean isAI){
+        getMap().addStart_agent(agent);
+        switch(agent.getType()){
+            case 'B':
+                characterMap.get(agent.getType()).add(0, new Bomberman(agent.getX(), agent.getY(), this, isAI));
+                break;
+            case 'V':
+                characterMap.get(agent.getType()).add(new Bird(agent.getX(), agent.getY(), this, isAI));
+                break;
+            case 'E':
+                characterMap.get(agent.getType()).add(new Rajion(agent.getX(), agent.getY(), this, isAI));
+                break;
+            case 'R':
+                characterMap.get(agent.getType()).add(new Enemy(agent.getX(), agent.getY(), this, isAI));
+                break;
         }
     }
 
@@ -121,6 +122,17 @@ public class BombermanGame extends Game {
             return false;
         }
         return getBreakableWalls()[x][y] || map.get_walls()[x][y];
+    }
+
+    public boolean hasCharacterAtCoords(int x, int y){
+        if(characterMap != null) {
+            for (char c : characterMap.keySet()) {
+                if (characterMap.get(c).stream().anyMatch(e -> e.getX() == x && e.getY() == y)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     // On active les agents Bird qui sont proche d'un Bomberman.
