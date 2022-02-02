@@ -46,6 +46,7 @@ public class JsonClient {
     }
 
     public ArrayList<InfoAgent> retrievePlayers() {
+
         JSONArray arr = (JSONArray) data.get("players");
         ArrayList<InfoAgent> agents = new ArrayList<>();
 

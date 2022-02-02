@@ -38,6 +38,13 @@ public class InfoItem {
         this.type = type;
     }
 
+    @Override
+    public String toString(){
 
+
+        return "";
+
+
+    }
 }
 	

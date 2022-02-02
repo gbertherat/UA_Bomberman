@@ -77,16 +77,19 @@ public class ServerClientThread implements Runnable {
 //                "]" +
 //                "}";
 //        server.broadcast(json);
-        JSONParser parser = new JSONParser();
         try {
-            while (socket.isConnected()){
+            while (!socket.isClosed()){
                 String obj = reader.readLine();
 
-                String json = server.getjServer().sendJson(obj);
-                System.out.println(json);
-                server.broadcast(json);
+                if(obj.equals("KILL")){
+                    socket.close();
+                } else {
+                    String json = server.getjServer().sendJson(obj);
+                    System.out.println(json);
+                    server.broadcast(json);
 
-                Thread.sleep(1000);
+                    Thread.sleep(2000);
+                }
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();

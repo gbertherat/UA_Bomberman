@@ -21,7 +21,7 @@ public class EtatPlayerJoin implements ServerState{
         BombermanGame game = jServer.getGame();
 
         obj.put("status", "OK");
-        obj.put("message", "Vous êtes connecté au server, en attenta du début de la partie.");
+        obj.put("message", "Vous êtes connecté au server, en attente du début de la partie.");
         obj.put("map", jServer.getServer().getMap().getFilename());
 
         ArrayList<InfoAgent> players = new ArrayList<>();
@@ -29,7 +29,7 @@ public class EtatPlayerJoin implements ServerState{
             game.getCharacterMap().get(type).forEach(e -> players.add(e.getInfo()));
         }
 
-        obj.put("players", new ArrayList<>());
+        obj.put("players", players);
         obj.put("walls", new ArrayList<>());
         obj.put("bombs", new ArrayList<>());
         obj.put("items", new ArrayList<>());

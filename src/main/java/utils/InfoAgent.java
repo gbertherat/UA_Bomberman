@@ -164,5 +164,21 @@ public class InfoAgent {
     public void setAgentAction(AgentAction agentAction) {
         this.agentAction = agentAction;
     }
+
+    @Override
+    public String toString() {
+        return  "{" +
+                "\"x\":" + x + "," +
+                "\"y\":" + y + "," +
+                "\"type\":\"" + type + "\"," +
+                "\"action\":\"" + agentAction + "\"," +
+                "\"isAlive\":\"" + isAlive + "\"," +
+                "\"isActive\":\"" + isActive + "\"," +
+                "\"canFly\":\"" + canFly + "\"," +
+                "\"bombRange\":" + bombRange + "," +
+                "\"isInvincible\":\"" + isInvincible + "\"," +
+                "\"isSick\":\"" + isSick +"\"" +
+                "},";
+    }
 }
 	

@@ -40,9 +40,10 @@ public class ClientReader extends Thread {
         // Réception du JSON
         JSONParser parser = new JSONParser();
         try {
-            while (true) {
+            while (!socket.isClosed() && !exit) {
                 String line;
                 if ((line = reader.readLine()) != null) {
+                    System.out.println(line);
                     JSONObject jsonObj = (JSONObject) parser.parse(line);
                     if (jsonObj.get("status") != null && jsonObj.get("status").equals("OK")) {
                         JsonClient jClient = new JsonClient(view, jsonObj);
@@ -57,6 +58,7 @@ public class ClientReader extends Thread {
             System.out.println("ClientReader Parse error (run): ");
             e.printStackTrace();
         } finally {
+            System.out.println("Disconnecting");
             client.disconnect();
         }
     }

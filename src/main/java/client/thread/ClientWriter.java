@@ -33,7 +33,7 @@ public class ClientWriter extends Thread {
 
     @Override
     public void run() {
-        while (socket.isConnected() && !exit) {
+        while (!exit) {
             writer.println(view.getAction().toString());
             view.setAction(AgentAction.STOP);
             try {
@@ -42,5 +42,6 @@ public class ClientWriter extends Thread {
                 e.printStackTrace();
             }
         }
+        writer.println("KILL");
     }
 }

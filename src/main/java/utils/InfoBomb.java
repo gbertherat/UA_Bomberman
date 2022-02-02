@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.Arrays;
+
 public class InfoBomb {
 
     private int x;
@@ -19,7 +21,6 @@ public class InfoBomb {
             range_wall[i] = range;
         }
         this.stateBomb = stateBomb;
-
     }
 
 
@@ -65,6 +66,14 @@ public class InfoBomb {
         this.range = range;
     }
 
-
+    @Override
+    public String toString() {
+        return "{" +
+                "\"x\":" + x + "," +
+                "\"y\":" + y + "," +
+                "\"range\":" + range + "," +
+                "\"state\":\"" + stateBomb + "\"," +
+                "},";
+    }
 }
 	
