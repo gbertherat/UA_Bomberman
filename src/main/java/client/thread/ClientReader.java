@@ -50,7 +50,7 @@ public class ClientReader extends Thread {
                         jClient.updateView();
                     }
                 }
-                Thread.sleep(1000);
+                Thread.sleep(500);
             }
         } catch (IOException | InterruptedException e) {
             exit = true;

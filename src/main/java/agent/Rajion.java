@@ -9,8 +9,8 @@ import java.util.Random;
 
 public class Rajion extends Character{
 
-    public Rajion(int x, int y, BombermanGame game, boolean isAI) {
-        super(new InfoAgent(x, y,
+    public Rajion(int id, int x, int y, BombermanGame game, boolean isAI) {
+        super(new InfoAgent(id, x, y,
                 AgentAction.STOP,
                 'E',
                 ColorAgent.values()[new Random().nextInt(ColorAgent.values().length)],

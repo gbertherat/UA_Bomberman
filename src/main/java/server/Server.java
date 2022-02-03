@@ -1,75 +1,69 @@
 package server;
 
 import controller.DefaultSpeed;
+import lombok.Getter;
 import model.BombermanGame;
 import model.InputMap;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 
+@Getter
 public class Server {
 
     private final ServerSocket sSocket;
-    private ArrayList<ServerClientThread> arrayClientThreads;
+    private ArrayList<ServerClientThread> clients;
+    private ServerConnectionThread sct;
     private BombermanGame game;
-    private JsonServer jServer;
 
     public Server() throws IOException {
-        arrayClientThreads = new ArrayList<>();
+        clients = new ArrayList<>();
         this.sSocket = new ServerSocket(1664);
+
+        this.sct = new ServerConnectionThread(this, sSocket, clients);
 
         this.game = new BombermanGame(1024, DefaultSpeed.value, new InputMap("niveau2.lay"));
         this.game.init();
-
-        this.jServer = new JsonServer(this, game);
     }
 
     public BombermanGame getGame() {
         return game;
     }
 
-    public InputMap getMap(){
+    public InputMap getMap() {
         return game.getMap();
     }
 
-    public JsonServer getjServer() {
-        return jServer;
-    }
-
     public void execute() {
+        this.sct.start();
         System.out.println("Server listening on port: " + sSocket.getLocalPort());
-        acceptConnection();
-    }
 
-    public void acceptConnection() {
-        while (true) {
+        while(true){
+            if(clients.size() >= 1){
+                game.setStarted(true);
+            }
+
+            if(game.isStarted()){
+                game.takeTurn();
+            }
+
             try {
-                Socket socket = sSocket.accept();
-                jServer.getState().setDoSendJson(true);
-                ServerClientThread clientThread = new ServerClientThread(socket, this);
-                arrayClientThreads.add(clientThread);
-                Thread thread = new Thread(clientThread);
-                thread.start();
-                System.out.println("New user connected");
-
-            } catch (IOException e) {
-                System.out.println("Server error (acceptConnection):");
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
 
     public void removeClient(ServerClientThread clientThread) {
-        this.arrayClientThreads.remove(clientThread);
+        this.clients.remove(clientThread);
         System.out.println("A client has left!");
     }
 
     public void broadcast(String msg) {
-        for (ServerClientThread sct : arrayClientThreads) {
+        for (ServerClientThread sct : clients) {
             sct.sendJson(msg);
         }
     }

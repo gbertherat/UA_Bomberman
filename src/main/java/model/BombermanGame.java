@@ -14,12 +14,14 @@ public class BombermanGame extends Game {
     private boolean[][] breakableWalls;
     private AgentAction bombermanAction;
     private int difficulty;
+    private boolean started;
 
     public BombermanGame(int maxTurn, int timeMs, InputMap map){
         super(maxTurn, timeMs);
         this.map = map;
         this.bombermanAction = AgentAction.STOP;
         this.difficulty = 3;
+        this.started = false;
     }
 
     public InputMap getMap() {
@@ -62,6 +64,14 @@ public class BombermanGame extends Game {
         return difficulty;
     }
 
+    public boolean isStarted() {
+        return started;
+    }
+
+    public void setStarted(boolean started) {
+        this.started = started;
+    }
+
     @Override
     public void init() {
         super.init();
@@ -74,20 +84,20 @@ public class BombermanGame extends Game {
         }
     }
 
-    public void addAgent(InfoAgent agent, boolean isAI){
+    public void addAgent(InfoAgent agent, int id, boolean isAI){
         getMap().addStart_agent(agent);
         switch(agent.getType()){
             case 'B':
-                characterMap.get(agent.getType()).add(0, new Bomberman(agent.getX(), agent.getY(), this, isAI));
+                characterMap.get(agent.getType()).add(new Bomberman(id, agent.getX(), agent.getY(), this, isAI));
                 break;
             case 'V':
-                characterMap.get(agent.getType()).add(new Bird(agent.getX(), agent.getY(), this, isAI));
+                characterMap.get(agent.getType()).add(new Bird(id, agent.getX(), agent.getY(), this, isAI));
                 break;
             case 'E':
-                characterMap.get(agent.getType()).add(new Rajion(agent.getX(), agent.getY(), this, isAI));
+                characterMap.get(agent.getType()).add(new Rajion(id, agent.getX(), agent.getY(), this, isAI));
                 break;
             case 'R':
-                characterMap.get(agent.getType()).add(new Enemy(agent.getX(), agent.getY(), this, isAI));
+                characterMap.get(agent.getType()).add(new Enemy(id, agent.getX(), agent.getY(), this, isAI));
                 break;
         }
     }
@@ -291,6 +301,7 @@ public class BombermanGame extends Game {
 
     @Override
     public void takeTurn() {
+        System.out.println("Take turn");
         // Checklist à chaque début de tours
         checkBirdsNearBomberman();
         checkBombs();
@@ -305,8 +316,6 @@ public class BombermanGame extends Game {
                 character.selectAction();
             }
         }
-
-        bombermanAction = AgentAction.STOP;
     }
 
     @Override
@@ -318,7 +327,5 @@ public class BombermanGame extends Game {
     public void gameOver(String reason) {
         setGameOverReason(reason);
         setFinished(true);
-        setChanged();
-        notifyObservers(this);
     }
 }

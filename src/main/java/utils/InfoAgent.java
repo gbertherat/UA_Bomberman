@@ -1,7 +1,7 @@
 package utils;
 
 public class InfoAgent {
-
+    private int id;
     private int x;
     private int y;
     private AgentAction agentAction;
@@ -19,7 +19,8 @@ public class InfoAgent {
     private boolean isSick;
     private int turnUntilNotSick;
 
-    public InfoAgent(int x, int y, AgentAction agentAction, char type, ColorAgent color, boolean canFly, boolean isActive, boolean isInvincible, boolean isSick) {
+    public InfoAgent(int id, int x, int y, AgentAction agentAction, char type, ColorAgent color, boolean canFly, boolean isActive, boolean isInvincible, boolean isSick) {
+        this.id = id;
         this.x = x;
         this.y = y;
         this.agentAction = agentAction;
@@ -36,6 +37,10 @@ public class InfoAgent {
 
         this.isSick = isSick;
         this.turnUntilNotSick = 10;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public int getX() {
@@ -168,6 +173,7 @@ public class InfoAgent {
     @Override
     public String toString() {
         return  "{" +
+                "\"id\":" + id + "," +
                 "\"x\":" + x + "," +
                 "\"y\":" + y + "," +
                 "\"type\":\"" + type + "\"," +
@@ -178,7 +184,7 @@ public class InfoAgent {
                 "\"bombRange\":" + bombRange + "," +
                 "\"isInvincible\":\"" + isInvincible + "\"," +
                 "\"isSick\":\"" + isSick +"\"" +
-                "},";
+                "}";
     }
 }
 	

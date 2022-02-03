@@ -1,25 +1,36 @@
 package server.etat;
 
-import org.json.simple.JSONObject;
+import agent.Character;
+import model.BombermanGame;
 import server.JsonServer;
+import utils.AgentAction;
+import utils.InfoAgent;
 
-public class EtatGameRunning implements ServerState{
+import java.util.Optional;
+
+public class EtatGameRunning implements ServerState {
     private final JsonServer server;
-    private boolean doSendJson;
 
-    public EtatGameRunning(JsonServer server){
+    public EtatGameRunning(JsonServer server) {
         this.server = server;
-        this.doSendJson = true;
     }
 
     @Override
-    public String sendJson(String action) {
-        server.sendJson(action);
-        return new JSONObject().toJSONString();
-    }
+    public String sendJson(int id, String action) {
+        BombermanGame game = server.getGame();
+        InfoAgent agent = null;
 
-    @Override
-    public void setDoSendJson(boolean bool) {
-        this.doSendJson = bool;
+        for(char c : game.getCharacterMap().keySet()){
+            Optional<Character> ch = game.getCharacterMap().get(c).stream().filter(e -> e.getInfo().getId() == id).findFirst();
+            if(ch.isPresent()){
+                agent = ch.get().getInfo();
+            }
+        }
+
+        if(agent != null){
+            agent.setAgentAction(AgentAction.valueOf(action));
+        }
+
+        return server.getGameData("Jeu en cours").toJSONString();
     }
 }

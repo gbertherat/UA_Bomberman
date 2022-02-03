@@ -87,7 +87,10 @@ public abstract class Character {
             getInfo().decreaseTurnUntilNotSick(1);
         }
 
-        AgentAction action = strategy.selectAction();
+        AgentAction action = getInfo().getAgentAction();
+        if(isAI) {
+            action = strategy.selectAction();
+        }
         getInfo().setAgentAction(action);
 
         if (action == AgentAction.PUT_BOMB && getInfo().isActive() && !getInfo().isSick()) {

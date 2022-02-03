@@ -37,7 +37,7 @@ public class ClientWriter extends Thread {
             writer.println(view.getAction().toString());
             view.setAction(AgentAction.STOP);
             try {
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

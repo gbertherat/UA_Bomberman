@@ -4,6 +4,7 @@ import agent.Bomberman;
 import model.BombermanGame;
 import org.json.simple.JSONObject;
 import server.JsonServer;
+import server.Timer;
 import utils.AgentAction;
 import utils.ColorAgent;
 import utils.InfoAgent;
@@ -13,23 +14,17 @@ import java.util.Random;
 
 public class EtatPlayerJoin implements ServerState{
     private final JsonServer jServer;
-    private boolean doSendJson;
+    private boolean addedPlayer;
 
     public EtatPlayerJoin(JsonServer jServer){
         this.jServer = jServer;
-        this.doSendJson = true;
     }
 
     @Override
-    public String sendJson(String action) {
-        if(!doSendJson){
-            return null;
-        }
-
-        JSONObject obj = new JSONObject();
+    public String sendJson(int id, String action) {
         BombermanGame game = jServer.getGame();
 
-        if(doSendJson) {
+        if(!addedPlayer) {
             Random random = new Random();
             int x = 0;
             int y = 0;
@@ -37,33 +32,17 @@ public class EtatPlayerJoin implements ServerState{
                 x = random.nextInt(game.getMap().get_walls().length);
                 y = random.nextInt(game.getMap().get_walls()[x].length);
             }
-            game.addAgent(new InfoAgent(x, y, AgentAction.STOP, 'B', ColorAgent.DEFAULT, false, true, false, false), false);
+            game.addAgent(new InfoAgent(id, x, y, AgentAction.STOP, 'B', ColorAgent.DEFAULT, false, true, false, false), id,false);
+            addedPlayer = true;
         }
 
-        obj.put("status", "OK");
-        obj.put("message", "Vous êtes connecté au server, en attente du début de la partie.");
-        obj.put("map", jServer.getServer().getMap().getFilename());
+        JSONObject obj = jServer.getGameData("Vous êtes connecté au server, en attente du début de la partie.");
 
-        ArrayList<InfoAgent> players = new ArrayList<>();
-        for(char type : game.getCharacterMap().keySet()){
-            game.getCharacterMap().get(type).forEach(e -> players.add(e.getInfo()));
-        }
-
-        obj.put("players", players);
-        obj.put("walls", new ArrayList<>());
-        obj.put("bombs", new ArrayList<>());
-        obj.put("items", new ArrayList<>());
-
-        doSendJson = false;
-        if(players.size() >= 2){
-            jServer.setState(new EtatGameStart(jServer));
+        if(jServer.getServer().getClients().size() >= 1){
+            System.out.println("Enough players joined, starting the game.");
+            jServer.setState(new EtatGameRunning(jServer));
         }
 
         return obj.toJSONString();
-    }
-
-    @Override
-    public void setDoSendJson(boolean bool) {
-        this.doSendJson = bool;
     }
 }

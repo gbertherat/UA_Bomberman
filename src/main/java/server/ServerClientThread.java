@@ -1,5 +1,6 @@
 package server;
 
+import model.BombermanGame;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -14,13 +15,17 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Random;
 
-public class ServerClientThread implements Runnable {
+public class ServerClientThread extends Thread {
+    private final int id;
     private final Socket socket;
     private final Server server;
     private final BufferedReader reader;
     private final PrintWriter writer;
+    private BombermanGame game;
 
-    public ServerClientThread(Socket socket, Server server) throws IOException {
+    public ServerClientThread(int id, Socket socket, Server server, BombermanGame game) throws IOException {
+        this.game = game;
+        this.id = id;
         this.socket = socket;
         this.server = server;
         this.reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
@@ -30,20 +35,21 @@ public class ServerClientThread implements Runnable {
     @Override
     public void run() {
         try {
+            JsonServer jsonServer = new JsonServer(this.server, game);
+
             while (!socket.isClosed()){
                 String obj = reader.readLine();
 
                 if(obj.equals("EXIT")){
                     socket.close();
                 } else {
-                    String json = server.getjServer().sendJson(obj);
+                    String json = jsonServer.sendJson(id, obj);
 
                     if(json != null){
                         System.out.println(json);
                         writer.println(json);
                     }
-
-                    Thread.sleep(2000);
+                    Thread.sleep(500);
                 }
             }
         } catch (IOException | InterruptedException e) {
@@ -53,7 +59,7 @@ public class ServerClientThread implements Runnable {
         }
     }
 
-    public void sendJson(/*DU JSON*/ String msg) {
+    public void sendJson(String msg) {
         writer.println(msg);
     }
 }
