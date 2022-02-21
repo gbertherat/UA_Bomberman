@@ -1,6 +1,5 @@
 package server.etat;
 
-import org.json.simple.JSONObject;
 import server.JsonServer;
 
 public class EtatGameEnd implements ServerState{
@@ -12,6 +11,6 @@ public class EtatGameEnd implements ServerState{
 
     @Override
     public String sendJson(int id, String action) {
-        return new JSONObject().toJSONString();
+        return "EXIT";
     }
 }

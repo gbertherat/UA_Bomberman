@@ -5,7 +5,10 @@ import model.BombermanGame;
 import server.JsonServer;
 import utils.AgentAction;
 import utils.InfoAgent;
+import utils.InfoBomb;
+import utils.StateBomb;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class EtatGameRunning implements ServerState {
@@ -31,6 +34,20 @@ public class EtatGameRunning implements ServerState {
             agent.setAgentAction(AgentAction.valueOf(action));
         }
 
+        for(InfoBomb bomb : game.getBombList()){
+            if(bomb.getStateBomb() == StateBomb.Exploded){
+                game.checkWallsInBombRange(bomb.getX(), bomb.getY(), bomb.getRange());
+                game.checkCharactersInBombRange(bomb.getX(), bomb.getY(), bomb.getRange());
+            }
+        }
+
+        ArrayList<InfoAgent> players = new ArrayList<>();
+        for(char type : game.getCharacterMap().keySet()){
+            game.getCharacterMap().get(type).forEach(e -> players.add(e.getInfo()));
+        }
+        if(players.size() <= 1){
+            server.setState(new EtatGameEnd(this.server));
+        }
         return server.getGameData("Jeu en cours").toJSONString();
     }
 }

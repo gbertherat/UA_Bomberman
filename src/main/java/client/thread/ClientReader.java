@@ -44,13 +44,17 @@ public class ClientReader extends Thread {
                 String line;
                 if ((line = reader.readLine()) != null) {
                     System.out.println(line);
-                    JSONObject jsonObj = (JSONObject) parser.parse(line);
-                    if (jsonObj.get("status") != null && jsonObj.get("status").equals("OK")) {
-                        JsonClient jClient = new JsonClient(view, jsonObj);
-                        jClient.updateView();
+                    if(line.equals("EXIT")){
+                        exit = true;
+                    } else {
+                        JSONObject jsonObj = (JSONObject) parser.parse(line);
+                        if (jsonObj.get("status") != null && jsonObj.get("status").equals("OK")) {
+                            JsonClient jClient = new JsonClient(view, jsonObj);
+                            jClient.updateView();
+                        }
                     }
                 }
-                Thread.sleep(500);
+                Thread.sleep(100);
             }
         } catch (IOException | InterruptedException e) {
             exit = true;

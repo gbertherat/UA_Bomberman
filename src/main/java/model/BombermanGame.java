@@ -12,6 +12,7 @@ public class BombermanGame extends Game {
     private ArrayList<InfoBomb> bombList;
     private ArrayList<InfoItem> itemList;
     private boolean[][] breakableWalls;
+    ArrayList<ArrayList<Integer>> destroyedWalls;
     private AgentAction bombermanAction;
     private int difficulty;
     private boolean started;
@@ -22,6 +23,7 @@ public class BombermanGame extends Game {
         this.bombermanAction = AgentAction.STOP;
         this.difficulty = 3;
         this.started = false;
+        this.destroyedWalls = new ArrayList<>();
     }
 
     public InputMap getMap() {
@@ -46,6 +48,14 @@ public class BombermanGame extends Game {
 
     public boolean[][] getBreakableWalls() {
         return breakableWalls;
+    }
+
+    public ArrayList<ArrayList<Integer>> getDestroyedWalls() {
+        return destroyedWalls;
+    }
+
+    public void setDestroyedWalls(ArrayList<ArrayList<Integer>> destroyedWalls) {
+        this.destroyedWalls = destroyedWalls;
     }
 
     public void setBombermanAction(AgentAction action){
@@ -161,11 +171,21 @@ public class BombermanGame extends Game {
     public void checkWallsInBombRange(int x, int y, int range){
         for(int i = -range; i < range+1; i++){
             if(x+i > 0 && x+i < breakableWalls.length && y > 0 && y < breakableWalls[x+i].length && breakableWalls[x+i][y]) {
-                breakableWalls[x + i][y] = false;
+                breakableWalls[x+i][y] = false;
+                ArrayList<Integer> coordsWall = new ArrayList<>();
+                coordsWall.add(x+i);
+                coordsWall.add(y);
+                destroyedWalls.add(coordsWall);
+
                 addRandomItem(x + i, y);
             }
             if(y+i > 0 && y+i < breakableWalls[x].length && x > 0 && breakableWalls[x][y + i]){
-                breakableWalls[x][y + i] = false;
+                breakableWalls[x][y+i] = false;
+                ArrayList<Integer> coordsWall = new ArrayList<>();
+                coordsWall.add(x);
+                coordsWall.add(y+i);
+                destroyedWalls.add(coordsWall);
+
                 addRandomItem(x, y + i);
             }
         }

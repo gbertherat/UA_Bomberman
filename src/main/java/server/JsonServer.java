@@ -3,7 +3,9 @@ package server;
 import lombok.Getter;
 import lombok.Setter;
 import model.BombermanGame;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import server.etat.EtatGameEnd;
 import server.etat.EtatPlayerJoin;
 import server.etat.ServerState;
 import utils.InfoAgent;
@@ -43,7 +45,18 @@ public class JsonServer {
         }
 
         obj.put("players", players);
-        obj.put("walls", new ArrayList<>());
+
+        JSONArray destroyedWalls = new JSONArray();
+        for(ArrayList<Integer> coords : game.getDestroyedWalls()){
+            JSONObject coord = new JSONObject();
+            coord.put("x", coords.get(0));
+            coord.put("y", coords.get(1));
+
+            destroyedWalls.add(coord);
+        }
+        game.setDestroyedWalls(new ArrayList<>());
+
+        obj.put("walls", destroyedWalls);
         obj.put("bombs", game.getBombList());
         obj.put("items", game.getItemList());
 

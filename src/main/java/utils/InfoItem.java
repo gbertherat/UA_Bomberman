@@ -6,7 +6,6 @@ public class InfoItem {
     private int y;
     private ItemType type;
 
-
     public InfoItem(int x, int y, ItemType type) {
         this.x = x;
         this.y = y;

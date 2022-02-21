@@ -90,20 +90,14 @@ public class JsonClient {
 
     public ArrayList<InfoItem> retrieveItems() {
         JSONArray items = (JSONArray) data.get("items");
-        ArrayList<InfoItem> viewItems = view.getPanel().getListInfoItems();
+        ArrayList<InfoItem> viewItems = new ArrayList<>();
 
         for(Object obj: items){
             JSONObject item = (JSONObject) obj;
             int x = ((Long) item.get("x")).intValue();
             int y = ((Long) item.get("y")).intValue();
             String type = (String) item.get("type");
-            boolean state = Boolean.parseBoolean((String) item.get("state"));
-
-            if(state){
-                viewItems.add(new InfoItem(x, y, ItemType.valueOf(type)));
-            } else {
-                viewItems.removeIf(e -> e.getX() == x && e.getY() == y);
-            }
+            viewItems.add(new InfoItem(x, y, ItemType.valueOf(type)));
         }
 
         return viewItems;

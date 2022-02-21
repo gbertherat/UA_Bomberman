@@ -38,7 +38,7 @@ public class EtatPlayerJoin implements ServerState{
 
         JSONObject obj = jServer.getGameData("Vous êtes connecté au server, en attente du début de la partie.");
 
-        if(jServer.getServer().getClients().size() >= 1){
+        if(jServer.getServer().getClients().size() >= 2){
             System.out.println("Enough players joined, starting the game.");
             jServer.setState(new EtatGameRunning(jServer));
         }

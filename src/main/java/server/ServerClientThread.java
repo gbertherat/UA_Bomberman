@@ -49,7 +49,7 @@ public class ServerClientThread extends Thread {
                         System.out.println(json);
                         writer.println(json);
                     }
-                    Thread.sleep(500);
+                    Thread.sleep(100);
                 }
             }
         } catch (IOException | InterruptedException e) {
