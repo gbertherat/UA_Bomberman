@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Observer;
 
-public abstract class Frame implements Observer {
+public abstract class Frame {
     private JFrame jFrame;
 
     public JFrame getJFrame(){
@@ -27,6 +27,7 @@ public abstract class Frame implements Observer {
     public void init(int width, int height, int yoffset){
         jFrame = new JFrame();
         jFrame.setTitle("Game");
+        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         updateSize(width, height, yoffset);
     }
 

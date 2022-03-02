@@ -3,6 +3,7 @@ package client;
 import client.thread.ClientReader;
 import client.thread.ClientWriter;
 import client.view.ViewBombermanGame;
+import client.view.ViewConnection;
 import lombok.Getter;
 import lombok.Setter;
 import model.InputMap;
@@ -52,7 +53,7 @@ public class Client {
         clientReader.setExit(true);
     }
 
-    public static void main(String[] args) {
+    private static void startClient(int ip, int port){
         try {
             ViewBombermanGame view = new ViewBombermanGame();
             InputMap map = new InputMap("niveau3.lay");
@@ -81,5 +82,10 @@ public class Client {
             System.out.println("Client error (main):");
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) {
+        ViewConnection connection = new ViewConnection();
+        connection.init(500,500,-100);
     }
 }
