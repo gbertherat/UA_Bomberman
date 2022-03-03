@@ -124,8 +124,6 @@ public class BombermanGame extends Game {
         this.breakableWalls = Arrays.stream(map.getStart_breakable_walls()).map(boolean[]::clone).toArray($ -> map.getStart_breakable_walls().clone());
         init();
         setGameOverReason("");
-        setChanged();
-        notifyObservers(this);
     }
 
     public void addRandomItem(int x, int y) {
@@ -321,7 +319,6 @@ public class BombermanGame extends Game {
 
     @Override
     public void takeTurn() {
-        System.out.println("Take turn");
         // Checklist à chaque début de tours
         checkBirdsNearBomberman();
         checkBombs();

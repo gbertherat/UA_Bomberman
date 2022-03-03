@@ -20,20 +20,17 @@ import java.net.URL;
 @Getter
 public class Client {
 
+    private int id;
     private String username;
-    private final String host;
-    private final int port;
 
     private final Socket socket;
     private final ClientWriter clientWriter;
     private final ClientReader clientReader;
     private final ViewBombermanGame view;
 
-    public Client(String host, int port, ViewBombermanGame view) throws IOException {
-        this.host = host;
-        this.port = port;
-
-        this.socket = new Socket(host, port);
+    public Client(Socket socket, int id, ViewBombermanGame view) throws IOException {
+        this.id = id;
+        this.socket = socket;
         this.clientWriter = new ClientWriter(socket, this, view);
         this.clientReader = new ClientReader(socket, this, view);
         this.view = view;
@@ -53,14 +50,14 @@ public class Client {
         clientReader.setExit(true);
     }
 
-    private static void startClient(int ip, int port){
+    public static void startClient(Socket socket, int id){
         try {
             ViewBombermanGame view = new ViewBombermanGame();
             InputMap map = new InputMap("niveau3.lay");
             view.setMap(map);
             view.init(map.get_walls().length * 48, map.get_walls()[0].length * 48, -100);
 
-            Client client = new Client("127.0.0.1", 1664, view);
+            Client client = new Client(socket, id, view);
             client.execute();
 
             view.getJFrame().addWindowListener(new WindowAdapter() {

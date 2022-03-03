@@ -33,6 +33,7 @@ public class ClientWriter extends Thread {
 
     @Override
     public void run() {
+        writer.println(client.getId());
         while (!exit) {
             writer.println(view.getAction().toString());
             view.setAction(AgentAction.STOP);

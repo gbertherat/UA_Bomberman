@@ -4,24 +4,33 @@ import controller.DefaultSpeed;
 import lombok.Getter;
 import model.BombermanGame;
 import model.InputMap;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
 
 @Getter
 public class Server {
 
+    private int id;
     private final ServerSocket sSocket;
     private ArrayList<ServerClientThread> clients;
     private ServerConnectionThread sct;
     private BombermanGame game;
 
     public Server() throws IOException {
-        clients = new ArrayList<>();
-        this.sSocket = new ServerSocket(1664);
+        this.id = -1;
 
+        clients = new ArrayList<>();
+
+        this.sSocket = new ServerSocket(0);
         this.sct = new ServerConnectionThread(this, sSocket, clients);
 
         this.game = new BombermanGame(1024, DefaultSpeed.value, new InputMap("niveau2.lay"));
@@ -36,13 +45,62 @@ public class Server {
         return game.getMap();
     }
 
+    private void addServerToServerlist(){
+        try {
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpGet request = new HttpGet("http://127.0.0.1:8080/BombermanJEE/servers/action"+
+                    "?ip="  + sSocket.getInetAddress().getHostAddress() +
+                    "&port="+ sSocket.getLocalPort());
+
+            try (CloseableHttpResponse response = client.execute(request)) {
+                HttpEntity entity = response.getEntity();
+
+                if (entity != null) {
+                    String result = EntityUtils.toString(entity).trim();
+                    if(!result.equals("null")){
+                        this.id = Integer.parseInt(result);
+                        System.out.println("Server added to serverlist!");
+                    }
+                }
+            }
+        } catch (IOException el) {
+            el.printStackTrace();
+        }
+    }
+
+    private void removeServerFromServerlist(){
+        if(this.id == -1){
+            return;
+        }
+
+        try {
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpDelete request = new HttpDelete("http://127.0.0.1:8080/BombermanJEE/servers/action?id=" + this.id);
+            client.execute(request);
+            System.out.println("Server removed from server list");
+
+        } catch (IOException el) {
+           el.printStackTrace();
+        }
+    }
+
     public void execute() {
         this.sct.start();
+        addServerToServerlist();
         System.out.println("Server listening on port: " + sSocket.getLocalPort());
 
+        Runtime.getRuntime().addShutdownHook(new Thread(){
+            @Override
+            public void run() {
+                removeServerFromServerlist();
+            }
+        });
+
         while(true){
-            if(clients.size() >= 1){
+            if(clients.size() > 1){
                 game.setStarted(true);
+                sct.setExit(true);
+                removeServerFromServerlist();
             }
 
             if(game.isStarted()){

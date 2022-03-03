@@ -1,22 +1,15 @@
 package server;
 
 import model.BombermanGame;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import utils.AgentAction;
-import utils.ColorAgent;
-import utils.InfoAgent;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Random;
 
 public class ServerClientThread extends Thread {
-    private final int id;
+    private int id;
     private final Socket socket;
     private final Server server;
     private final BufferedReader reader;
@@ -39,17 +32,19 @@ public class ServerClientThread extends Thread {
 
             while (!socket.isClosed()){
                 String obj = reader.readLine();
+                if(obj != null) {
+                    if (obj.equals("EXIT")) {
+                        socket.close();
+                    } else if (obj.chars().allMatch(Character::isDigit)) {
+                        this.id = Integer.parseInt(obj);
+                    } else {
+                        String json = jsonServer.sendJson(id, obj);
 
-                if(obj.equals("EXIT")){
-                    socket.close();
-                } else {
-                    String json = jsonServer.sendJson(id, obj);
-
-                    if(json != null){
-                        System.out.println(json);
-                        writer.println(json);
+                        if (json != null) {
+                            writer.println(json);
+                        }
+                        Thread.sleep(100);
                     }
-                    Thread.sleep(100);
                 }
             }
         } catch (IOException | InterruptedException e) {

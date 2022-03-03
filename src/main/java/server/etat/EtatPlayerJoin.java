@@ -1,15 +1,12 @@
 package server.etat;
 
-import agent.Bomberman;
 import model.BombermanGame;
 import org.json.simple.JSONObject;
 import server.JsonServer;
-import server.Timer;
 import utils.AgentAction;
 import utils.ColorAgent;
 import utils.InfoAgent;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 public class EtatPlayerJoin implements ServerState{

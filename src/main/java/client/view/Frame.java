@@ -28,6 +28,7 @@ public abstract class Frame {
         jFrame = new JFrame();
         jFrame.setTitle("Game");
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        jFrame.setResizable(false);
         updateSize(width, height, yoffset);
     }
 
