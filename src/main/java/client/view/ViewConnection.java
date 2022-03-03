@@ -1,6 +1,12 @@
 package client.view;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class ViewConnection extends Frame{
     private JFrame frame;
@@ -65,6 +71,17 @@ public class ViewConnection extends Frame{
             frame.repaint();
             frame.setVisible(true);
         });
+
+        JLabel accLabel = new JLabel("Pour créer un compte, allez sur le site.");
+        accLabel.setBounds(100,300,300,30);
+        panel.add(accLabel);
+
+        JTextField accField = new JTextField("127.0.0.1:8080/BombermanJEE/Register");
+        accField.setEditable(false);
+        accField.setFont(new Font("Calibri", Font.PLAIN, 12));
+        accField.setAlignmentX(JTextField.CENTER);
+        accField.setBounds(100,350,300,30);
+        panel.add(accField);
 
         frame.setContentPane(panel);
         frame.setVisible(true);
