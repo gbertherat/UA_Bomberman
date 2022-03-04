@@ -1,15 +1,20 @@
 package server;
 
+import agent.Character;
 import controller.DefaultSpeed;
 import lombok.Getter;
 import model.BombermanGame;
 import model.InputMap;
 import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
@@ -48,7 +53,7 @@ public class Server {
     private void addServerToServerlist(){
         try {
             CloseableHttpClient client = HttpClients.createDefault();
-            HttpGet request = new HttpGet("http://127.0.0.1:8080/BombermanJEE/servers/action"+
+            HttpGet request = new HttpGet("http://127.0.0.1:8080/BombermanJEE/server"+
                     "?ip="  + sSocket.getInetAddress().getHostAddress() +
                     "&port="+ sSocket.getLocalPort());
 
@@ -68,6 +73,36 @@ public class Server {
         }
     }
 
+    private void addGamePlayed(int id){
+        try {
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpPut request = new HttpPut("http://127.0.0.1:8080/BombermanJEE/user/gameplayed");
+
+            ArrayList<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair("id", String.valueOf(id)));
+            request.setEntity(new UrlEncodedFormEntity(params));
+            client.execute(request);
+
+        } catch (IOException el) {
+            el.printStackTrace();
+        }
+    }
+
+    private void addGameWon(int id){
+        try {
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpPut request = new HttpPut("http://127.0.0.1:8080/BombermanJEE/user/gamewon");
+
+            ArrayList<NameValuePair> params = new ArrayList<>();
+            params.add(new BasicNameValuePair("id", String.valueOf(id)));
+            request.setEntity(new UrlEncodedFormEntity(params));
+            client.execute(request);
+
+        } catch (IOException el) {
+            el.printStackTrace();
+        }
+    }
+
     private void removeServerFromServerlist(){
         if(this.id == -1){
             return;
@@ -75,7 +110,7 @@ public class Server {
 
         try {
             CloseableHttpClient client = HttpClients.createDefault();
-            HttpDelete request = new HttpDelete("http://127.0.0.1:8080/BombermanJEE/servers/action?id=" + this.id);
+            HttpDelete request = new HttpDelete("http://127.0.0.1:8080/BombermanJEE/server?id=" + this.id);
             client.execute(request);
             System.out.println("Server removed from server list");
 
@@ -96,7 +131,7 @@ public class Server {
             }
         });
 
-        while(true){
+        while(!game.isFinished()){
             if(clients.size() > 1){
                 game.setStarted(true);
                 sct.setExit(true);
@@ -113,17 +148,24 @@ public class Server {
                 e.printStackTrace();
             }
         }
+
+        for(ServerClientThread sct : clients){
+            int clientId = sct.getClientId();
+            addGamePlayed(clientId);
+        }
+        ArrayList<Character> players = new ArrayList<>();
+        game.getCharacterMap().keySet().forEach(key -> players.addAll(game.getCharacterMap().get(key)));
+        if(players.size() == 1){
+            Character player = players.get(0);
+            if(!player.isAI()){
+                addGameWon(player.getInfo().getId());
+            }
+        }
     }
 
     public void removeClient(ServerClientThread clientThread) {
         this.clients.remove(clientThread);
         System.out.println("A client has left!");
-    }
-
-    public void broadcast(String msg) {
-        for (ServerClientThread sct : clients) {
-            sct.sendJson(msg);
-        }
     }
 
     public static void main(String[] args) {
