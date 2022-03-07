@@ -17,8 +17,8 @@ public class BombermanGame extends Game {
     private int difficulty;
     private boolean started;
 
-    public BombermanGame(int maxTurn, int timeMs, InputMap map){
-        super(maxTurn, timeMs);
+    public BombermanGame(int maxTurn, InputMap map){
+        super(maxTurn);
         this.map = map;
         this.bombermanAction = AgentAction.STOP;
         this.difficulty = 3;

@@ -9,15 +9,11 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ClientWriter extends Thread {
-    private final Socket socket;
-    private final Client client;
     private final PrintWriter writer;
     private final ViewBombermanGame view;
     private boolean exit;
 
-    public ClientWriter(Socket socket, Client client, ViewBombermanGame view) throws IOException {
-        this.socket = socket;
-        this.client = client;
+    public ClientWriter(Socket socket, ViewBombermanGame view) throws IOException {
         writer = new PrintWriter(socket.getOutputStream(), true);
         this.view = view;
         this.exit = false;
@@ -33,7 +29,6 @@ public class ClientWriter extends Thread {
 
     @Override
     public void run() {
-        writer.println(client.getId());
         while (!exit) {
             writer.println(view.getAction().toString());
             view.setAction(AgentAction.STOP);

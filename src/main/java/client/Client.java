@@ -19,10 +19,7 @@ import java.net.URL;
 @Setter
 @Getter
 public class Client {
-
-    private int id;
-    private String username;
-
+    private final int id;
     private final Socket socket;
     private final ClientWriter clientWriter;
     private final ClientReader clientReader;
@@ -31,7 +28,7 @@ public class Client {
     public Client(Socket socket, int id, ViewBombermanGame view) throws IOException {
         this.id = id;
         this.socket = socket;
-        this.clientWriter = new ClientWriter(socket, this, view);
+        this.clientWriter = new ClientWriter(socket, view);
         this.clientReader = new ClientReader(socket, this, view);
         this.view = view;
     }
@@ -83,6 +80,6 @@ public class Client {
 
     public static void main(String[] args) {
         ViewConnection connection = new ViewConnection();
-        connection.init(500,500,-100);
+        connection.init(500,600,-100);
     }
 }

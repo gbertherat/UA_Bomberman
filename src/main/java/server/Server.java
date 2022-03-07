@@ -1,7 +1,6 @@
 package server;
 
 import agent.Character;
-import controller.DefaultSpeed;
 import lombok.Getter;
 import model.BombermanGame;
 import model.InputMap;
@@ -38,7 +37,7 @@ public class Server {
         this.sSocket = new ServerSocket(0);
         this.sct = new ServerConnectionThread(this, sSocket, clients);
 
-        this.game = new BombermanGame(1024, DefaultSpeed.value, new InputMap("niveau2.lay"));
+        this.game = new BombermanGame(1024, new InputMap("niveau2.lay"));
         this.game.init();
     }
 
@@ -55,7 +54,8 @@ public class Server {
             CloseableHttpClient client = HttpClients.createDefault();
             HttpGet request = new HttpGet("http://127.0.0.1:8080/BombermanJEE/server"+
                     "?ip="  + sSocket.getInetAddress().getHostAddress() +
-                    "&port="+ sSocket.getLocalPort());
+                    "&port="+ sSocket.getLocalPort() +
+                    "&token=791cdc4f-1812-4078-a265-4feed8f2af2b");
 
             try (CloseableHttpResponse response = client.execute(request)) {
                 HttpEntity entity = response.getEntity();
@@ -73,6 +73,23 @@ public class Server {
         }
     }
 
+    private void removeServerFromServerlist(){
+        if(this.id == -1){
+            return;
+        }
+
+        try {
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpDelete request = new HttpDelete("http://127.0.0.1:8080/BombermanJEE/server?id=" + this.id +
+                    "&token=047ff0b3-d5cf-4549-b46a-1f876984c93d");
+            client.execute(request);
+            System.out.println("Server removed from server list");
+
+        } catch (IOException el) {
+            el.printStackTrace();
+        }
+    }
+
     private void addGamePlayed(int id){
         try {
             CloseableHttpClient client = HttpClients.createDefault();
@@ -80,6 +97,7 @@ public class Server {
 
             ArrayList<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("id", String.valueOf(id)));
+            params.add(new BasicNameValuePair("token", "71ed552a-59b9-4ee1-926a-1f04e8e11d32"));
             request.setEntity(new UrlEncodedFormEntity(params));
             client.execute(request);
 
@@ -95,27 +113,12 @@ public class Server {
 
             ArrayList<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("id", String.valueOf(id)));
+            params.add(new BasicNameValuePair("token", "8e79d143-8cdf-4abf-96e8-93f0e172a12b"));
             request.setEntity(new UrlEncodedFormEntity(params));
             client.execute(request);
 
         } catch (IOException el) {
             el.printStackTrace();
-        }
-    }
-
-    private void removeServerFromServerlist(){
-        if(this.id == -1){
-            return;
-        }
-
-        try {
-            CloseableHttpClient client = HttpClients.createDefault();
-            HttpDelete request = new HttpDelete("http://127.0.0.1:8080/BombermanJEE/server?id=" + this.id);
-            client.execute(request);
-            System.out.println("Server removed from server list");
-
-        } catch (IOException el) {
-           el.printStackTrace();
         }
     }
 
@@ -132,7 +135,7 @@ public class Server {
         });
 
         while(!game.isFinished()){
-            if(clients.size() > 1){
+            if(clients.stream().filter(e -> e.getClientId() != -1).count() >= 2 && !game.isStarted()){
                 game.setStarted(true);
                 sct.setExit(true);
                 removeServerFromServerlist();

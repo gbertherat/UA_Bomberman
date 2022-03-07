@@ -23,7 +23,6 @@ public class InputMap implements Serializable {
     private boolean[][] start_breakable_walls;
 
     private ArrayList<InfoAgent> start_agents;
-    private BufferedReader buffer;
 
     public InputMap(String filename) {
         this.filename = filename;
@@ -34,7 +33,7 @@ public class InputMap implements Serializable {
         try {
             InputStream flux = new FileInputStream(url.toURI().getPath());
             InputStreamReader lecture = new InputStreamReader(flux);
-            buffer = new BufferedReader(lecture);
+            BufferedReader buffer = new BufferedReader(lecture);
 
             String ligne;
 

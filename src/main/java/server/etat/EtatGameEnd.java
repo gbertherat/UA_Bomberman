@@ -1,13 +1,8 @@
 package server.etat;
 
-import server.JsonServer;
-
 public class EtatGameEnd implements ServerState{
-    private final JsonServer jServer;
 
-    public EtatGameEnd(JsonServer jServer){
-        this.jServer = jServer;
-    }
+    public EtatGameEnd(){}
 
     @Override
     public String sendJson(int id, String action) {

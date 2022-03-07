@@ -1,17 +1,13 @@
 package model;
 
-public abstract class Game implements Runnable {
+public abstract class Game {
     private int turn;
     private int maxturn;
-    private int timeMs;
-    private boolean isRunning;
     private boolean isFinished;
     private String gameOverReason;
-    private Thread thread;
 
-    public Game(int maxTurn, int timeMs) {
+    public Game(int maxTurn) {
         this.maxturn = maxTurn;
-        this.timeMs = timeMs;
         this.isFinished = false;
     }
 
@@ -43,54 +39,12 @@ public abstract class Game implements Runnable {
         this.gameOverReason = gameOverReason;
     }
 
-    public void setTimeMs(int time){
-        this.timeMs = time;
-    }
-
     public void init(){
         turn = 1;
     }
 
-    public void step(){
-        if(gameContinue()){
-            turn++;
-            takeTurn();
-        } else if(isFinished){
-            isRunning = false;
-        } else {
-            gameOver("Turn limit reached!");
-            isRunning = false;
-        }
-    }
-
-    public void pause(){
-        isRunning = false;
-    }
-
-    public void resume(){
-        isRunning = true;
-    }
-
-    public void run(){
-        while(isRunning){
-            step();
-            try {
-                Thread.sleep(timeMs);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void launch(){
-        this.isRunning = true;
-        thread = new Thread(this);
-        thread.start();
-    }
-
     public void restart(){
         this.isFinished = false;
-        this.isRunning = false;
         setTurn(1);
     }
 
