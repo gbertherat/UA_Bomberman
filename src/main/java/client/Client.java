@@ -4,10 +4,12 @@ import client.thread.ClientReader;
 import client.thread.ClientWriter;
 import client.view.ViewBombermanGame;
 import client.view.ViewConnection;
+import client.view.ViewGameEnd;
 import lombok.Getter;
 import lombok.Setter;
 import model.InputMap;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -38,12 +40,25 @@ public class Client {
         clientReader.start();
     }
 
-    public void disconnect(){
-        view.getJFrame().dispatchEvent(new WindowEvent(view.getJFrame(), WindowEvent.WINDOW_CLOSING));
+    public void disconnect(String cause){
+        view.getJFrame().setVisible(false);
+        view.getJFrame().dispose();
+
+        try {
+            killProcess();
+            getSocket().close();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        ViewGameEnd vge = new ViewGameEnd(cause);
+        vge.init(500,500,-100);
     }
 
-    public void killProcess() {
+    public void killProcess() throws InterruptedException {
         clientWriter.setExit(true);
+        clientWriter.join();
+
         clientReader.setExit(true);
     }
 
@@ -65,7 +80,7 @@ public class Client {
                         client.getSocket().close();
 
                         System.exit(0);
-                    } catch (IOException e) {
+                    } catch (IOException | InterruptedException e) {
                         System.out.println("windowClosing error :");
                         e.printStackTrace();
                     }

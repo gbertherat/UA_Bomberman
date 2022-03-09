@@ -46,7 +46,7 @@ public class EtatGameRunning implements ServerState {
             game.getCharacterMap().get(type).forEach(e -> players.add(e.getInfo()));
         }
         if(players.size() <= 1){
-            server.setState(new EtatGameEnd());
+            server.setState(new EtatGameEnd(this.server));
         }
         return server.getGameData("Jeu en cours").toJSONString();
     }

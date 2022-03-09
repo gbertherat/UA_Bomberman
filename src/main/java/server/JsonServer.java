@@ -54,7 +54,6 @@ public class JsonServer {
 
             destroyedWalls.add(coord);
         }
-        game.setDestroyedWalls(new ArrayList<>());
 
         obj.put("walls", destroyedWalls);
         obj.put("bombs", game.getBombList());

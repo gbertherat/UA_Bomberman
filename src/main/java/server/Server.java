@@ -32,7 +32,7 @@ public class Server {
         clients = new ArrayList<>();
 
         this.sSocket = new ServerSocket(0);
-        this.sct = new ServerConnectionThread(this, sSocket, clients);
+        this.sct = new ServerConnectionThread(this, sSocket);
 
         this.game = new BombermanGame(1024, new InputMap("niveau2.lay"));
         this.game.init();
@@ -160,14 +160,21 @@ public class Server {
 
         while(!game.isFinished()){
             if(clients.stream().filter(e -> e.getClientId() != -1).count() >= 2 && !game.isStarted()){
+                clients.removeIf(e -> e.getClientId() == -1);
+                try {
+                    this.sct.getsSocket().close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
                 int id = addGame();
                 game.setId(id);
                 game.setStarted(true);
-                sct.setExit(true);
                 removeServerFromServerlist();
             }
 
             if(game.isStarted()){
+                game.setDestroyedWalls(new ArrayList<>());
                 game.takeTurn();
             }
 
@@ -194,8 +201,23 @@ public class Server {
     }
 
     public void removeClient(ServerClientThread clientThread) {
-        this.clients.remove(clientThread);
         System.out.println("A client has left!");
+
+
+        for(char c : game.getCharacterMap().keySet()){
+            for(Character character : game.getCharacterMap().get(c)){
+                if(character.getInfo().getId() == clientThread.getClientId()){
+                    game.getCharacterMap().get(c).remove(character);
+                    break;
+                }
+            }
+        }
+
+        this.clients.remove(clientThread);
+
+        if(this.clients.size() <= 1){
+            this.game.setFinished(true);
+        }
     }
 
     public static void main(String[] args) {

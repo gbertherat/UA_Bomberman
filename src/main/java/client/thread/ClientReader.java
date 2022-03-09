@@ -18,6 +18,7 @@ public class ClientReader extends Thread {
     private final BufferedReader reader;
     private final ViewBombermanGame view;
     private boolean exit;
+    private String exitCause;
 
     public ClientReader(Socket socket, Client client, ViewBombermanGame view) throws IOException {
         this.socket = socket;
@@ -44,8 +45,9 @@ public class ClientReader extends Thread {
                 String line;
                 if ((line = reader.readLine()) != null) {
                     System.out.println(line);
-                    if(line.equals("EXIT")){
+                    if(line.contains("EXIT")){
                         exit = true;
+                        exitCause = line.split(":")[1];
                     } else {
                         JSONObject jsonObj = (JSONObject) parser.parse(line);
                         if (jsonObj.get("status") != null && jsonObj.get("status").equals("OK")) {
@@ -63,7 +65,7 @@ public class ClientReader extends Thread {
             e.printStackTrace();
         } finally {
             System.out.println("Disconnecting");
-            client.disconnect();
+            client.disconnect(exitCause);
         }
     }
 }
