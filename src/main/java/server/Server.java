@@ -94,6 +94,7 @@ public class Server {
 
             ArrayList<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("map", game.getMap().getFilename()));
+            params.add(new BasicNameValuePair("token", "2028e275-7757-44f9-893a-d1990153c6c7"));
             request.setEntity(new UrlEncodedFormEntity(params));
 
             try (CloseableHttpResponse response = client.execute(request)) {
@@ -122,6 +123,7 @@ public class Server {
             ArrayList<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("userid", String.valueOf(userid)));
             params.add(new BasicNameValuePair("gameid", String.valueOf(gameid)));
+            params.add(new BasicNameValuePair("token", "132913b9-6b2e-44e0-8265-3562299e1518"));
             request.setEntity(new UrlEncodedFormEntity(params));
             client.execute(request);
 
@@ -138,6 +140,7 @@ public class Server {
             ArrayList<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("userid", String.valueOf(userid)));
             params.add(new BasicNameValuePair("gameid", String.valueOf(gameid)));
+            params.add(new BasicNameValuePair("token", "c479631b-e171-4cdc-bad0-e60b7c98b281"));
             request.setEntity(new UrlEncodedFormEntity(params));
             client.execute(request);
 
