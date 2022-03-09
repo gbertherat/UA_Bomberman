@@ -1,12 +1,13 @@
 package model;
 
-import agent.*;
 import agent.Character;
+import agent.*;
 import utils.*;
 
 import java.util.*;
 
 public class BombermanGame extends Game {
+    private int id;
     private InputMap map;
     private HashMap<java.lang.Character, ArrayList<Character>> characterMap;
     private ArrayList<InfoBomb> bombList;
@@ -19,6 +20,7 @@ public class BombermanGame extends Game {
 
     public BombermanGame(int maxTurn, InputMap map){
         super(maxTurn);
+        this.id = -1;
         this.map = map;
         this.bombermanAction = AgentAction.STOP;
         this.difficulty = 3;
@@ -28,6 +30,14 @@ public class BombermanGame extends Game {
 
     public InputMap getMap() {
         return map;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public void changeMap(InputMap map){
