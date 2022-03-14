@@ -42,12 +42,17 @@ public class EtatGameRunning implements ServerState {
         }
 
         ArrayList<InfoAgent> players = new ArrayList<>();
+        ArrayList<InfoAgent> bots = new ArrayList<>();
         for(char type : game.getCharacterMap().keySet()){
-            game.getCharacterMap().get(type).forEach(e -> players.add(e.getInfo()));
+            game.getCharacterMap().get(type).stream().filter(e -> !e.isAI()).forEach(e -> players.add(e.getInfo()));
+            game.getCharacterMap().get(type).stream().filter(Character::isAI).forEach(e -> bots.add(e.getInfo()));
         }
-        if(players.size() <= 1){
+
+
+        if(players.size() == 0 || (players.size() <= 1 && bots.size() == 0)){
             server.setState(new EtatGameEnd(this.server));
         }
+
         return server.getGameData("Jeu en cours").toJSONString();
     }
 }

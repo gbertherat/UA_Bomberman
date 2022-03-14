@@ -122,11 +122,10 @@ public class BombermanGame extends Game {
 
             int id = 1;
             while(ids.contains(id)){
-                random = new Random();
                 id = random.nextInt(100);
             }
 
-            InfoAgent agent = new InfoAgent(playerCount+i+1, x, y, AgentAction.STOP, selectedChar, ColorAgent.ROUGE, selectedChar=='V', true, false, false);
+            InfoAgent agent = new InfoAgent(id, x, y, AgentAction.STOP, selectedChar, ColorAgent.ROUGE, selectedChar=='V', true, false, false);
             addAgent(agent, agent.getId(), true);
             ids.add(id);
         }
