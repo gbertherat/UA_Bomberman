@@ -26,7 +26,7 @@ public class ServerClientThread extends Thread {
     private final Server server;
     private final BufferedReader reader;
     private final PrintWriter writer;
-    private BombermanGame game;
+    private final BombermanGame game;
 
     public ServerClientThread(Socket socket, Server server, BombermanGame game) throws IOException {
         this.clientId = -1;

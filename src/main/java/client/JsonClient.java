@@ -56,6 +56,7 @@ public class JsonClient {
             int x = ((Long) agent.get("x")).intValue();
             int y = ((Long) agent.get("y")).intValue();
             char type = ((String) agent.get("type")).charAt(0);
+            ColorAgent color = ColorAgent.valueOf((String) agent.get("color"));
             String action = (String) agent.get("action");
             boolean canFly = Boolean.parseBoolean((String) agent.get("canFly"));
             boolean isActive = Boolean.parseBoolean((String) agent.get("isActive"));
@@ -63,7 +64,7 @@ public class JsonClient {
             boolean isInvincible = Boolean.parseBoolean((String) agent.get("isInvincible"));
             boolean isSick = Boolean.parseBoolean((String) agent.get("isSick"));
 
-            InfoAgent info = new InfoAgent(id, x, y, AgentAction.valueOf(action), type, ColorAgent.DEFAULT, canFly, isActive, isInvincible, isSick);
+            InfoAgent info = new InfoAgent(id, x, y, AgentAction.valueOf(action), type, color, canFly, isActive, isInvincible, isSick);
             info.setAlive(isAlive);
 
             agents.add(info);

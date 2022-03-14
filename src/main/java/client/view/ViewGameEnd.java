@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class ViewGameEnd extends Frame{
     private JFrame frame;
-    private String reason;
+    private final String reason;
 
     public ViewGameEnd(String reason){
         this.reason = reason;

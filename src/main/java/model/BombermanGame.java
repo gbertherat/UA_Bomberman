@@ -104,20 +104,48 @@ public class BombermanGame extends Game {
         }
     }
 
+    public void addBots(int playerCount, ArrayList<Integer> ids){
+        int nbBotsToAdd = 5-playerCount;
+        char[] charTypes = {'B','V','E','R'};
+
+        Random random = new Random();
+
+        for(int i = 0; i < nbBotsToAdd; i++){
+            char selectedChar = charTypes[random.nextInt(4)];
+
+            int x = 0;
+            int y = 0;
+            while (hasWallAtCoords(x, y) || hasCharacterAtCoords(x, y)) {
+                x = random.nextInt(getMap().get_walls().length);
+                y = random.nextInt(getMap().get_walls()[x].length);
+            }
+
+            int id = 1;
+            while(ids.contains(id)){
+                random = new Random();
+                id = random.nextInt(100);
+            }
+
+            InfoAgent agent = new InfoAgent(playerCount+i+1, x, y, AgentAction.STOP, selectedChar, ColorAgent.ROUGE, selectedChar=='V', true, false, false);
+            addAgent(agent, agent.getId(), true);
+            ids.add(id);
+        }
+    }
+
     public void addAgent(InfoAgent agent, int id, boolean isAI){
         getMap().addStart_agent(agent);
         switch(agent.getType()){
             case 'B':
-                characterMap.get(agent.getType()).add(new Bomberman(id, agent.getX(), agent.getY(), this, isAI));
+                characterMap.get(agent.getType()).add(new Bomberman(id, agent.getX(), agent.getY(), agent.getColor(), this, isAI));
                 break;
             case 'V':
-                characterMap.get(agent.getType()).add(new Bird(id, agent.getX(), agent.getY(), this, isAI));
+                characterMap.get(agent.getType()).add(new Bird(id, agent.getX(), agent.getY(), agent.getColor(), this, isAI));
                 break;
             case 'E':
-                characterMap.get(agent.getType()).add(new Rajion(id, agent.getX(), agent.getY(), this, isAI));
+                characterMap.get(agent.getType()).add(new Rajion(id, agent.getX(), agent.getY(), agent.getColor(), this, isAI));
                 break;
             case 'R':
-                characterMap.get(agent.getType()).add(new Enemy(id, agent.getX(), agent.getY(), this, isAI));
+                characterMap.get(agent.getType()).add(new Enemy(id, agent.getX(), agent.getY(), agent.getColor(), this, isAI));
                 break;
         }
     }

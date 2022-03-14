@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 
@@ -25,8 +26,8 @@ public class PanelBomberman extends JPanel {
     protected Color brokable_walls_Color = Color.lightGray;
     protected Color ground_Color = new Color(50, 150, 50);
 
-    private int sizeX;
-    private int sizeY;
+    private final int sizeX;
+    private final int sizeY;
 
     private int fen_x;
     private int fen_y;
@@ -44,9 +45,9 @@ public class PanelBomberman extends JPanel {
     protected ArrayList<InfoItem> listInfoItems;
     protected ArrayList<InfoBomb> listInfoBombs;
 
-    private boolean breakable_walls[][];
+    private boolean[][] breakable_walls;
 
-    private boolean[][] walls;
+    private final boolean[][] walls;
 
     int cpt;
 

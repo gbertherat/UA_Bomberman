@@ -2,7 +2,7 @@ package model;
 
 public abstract class Game {
     private int turn;
-    private int maxturn;
+    private final int maxturn;
     private boolean isFinished;
     private String gameOverReason;
 

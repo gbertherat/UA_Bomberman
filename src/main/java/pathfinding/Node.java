@@ -4,9 +4,9 @@ public class Node implements Comparable<Node>{
     private final Node parent;
     private final int x;
     private final int y;
-    private int f = 0;
-    private int g;
-    private int h;
+    private final int f = 0;
+    private final int g;
+    private final int h;
 
     public Node(Node parent, int x, int y, int g, int h) {
         this.parent = parent;

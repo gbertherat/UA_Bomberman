@@ -1,7 +1,7 @@
 package utils;
 
 public class InfoAgent {
-    private int id;
+    private final int id;
     private int x;
     private int y;
     private AgentAction agentAction;
@@ -10,7 +10,7 @@ public class InfoAgent {
 
     private boolean isAlive;
     private boolean isActive;
-    private boolean canFly;
+    private final boolean canFly;
 
     private int bombRange;
     private boolean isInvincible;
@@ -177,6 +177,7 @@ public class InfoAgent {
                 "\"x\":" + x + "," +
                 "\"y\":" + y + "," +
                 "\"type\":\"" + type + "\"," +
+                "\"color\":\"" + color + "\"," +
                 "\"action\":\"" + agentAction + "\"," +
                 "\"isAlive\":\"" + isAlive + "\"," +
                 "\"isActive\":\"" + isActive + "\"," +

@@ -22,9 +22,9 @@ public class Server {
 
     private int id;
     private final ServerSocket sSocket;
-    private ArrayList<ServerClientThread> clients;
-    private ServerConnectionThread sct;
-    private BombermanGame game;
+    private final ArrayList<ServerClientThread> clients;
+    private final ServerConnectionThread sct;
+    private final BombermanGame game;
 
     public Server() throws IOException {
         this.id = -1;
@@ -172,7 +172,14 @@ public class Server {
 
                 int id = addGame();
                 game.setId(id);
+
+                ArrayList<Integer> ids = new ArrayList<>();
+                for(int i = 0; i < getClients().size(); i++){
+                    ids.add(getClients().get(i).getClientId());
+                }
+                game.addBots(getClients().size(), ids);
                 game.setStarted(true);
+
                 removeServerFromServerlist();
             }
 

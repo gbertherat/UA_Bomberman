@@ -1,6 +1,5 @@
 package client.thread;
 
-import client.Client;
 import client.view.ViewBombermanGame;
 import utils.AgentAction;
 

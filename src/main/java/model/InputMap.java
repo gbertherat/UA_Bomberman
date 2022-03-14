@@ -1,14 +1,10 @@
 package model;
 
-import utils.AgentAction;
-import utils.ColorAgent;
 import utils.InfoAgent;
 
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Objects;
 
 
 /**
@@ -17,7 +13,7 @@ import java.util.Objects;
 
 public class InputMap implements Serializable {
     private static final long serialVersionUID = 1L;
-    private String filename;
+    private final String filename;
 
     private boolean[][] walls;
     private boolean[][] start_breakable_walls;

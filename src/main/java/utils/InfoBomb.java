@@ -7,7 +7,7 @@ public class InfoBomb {
     private int x;
     private int y;
     private int range;
-    private int[] range_wall;
+    private final int[] range_wall;
 
 
     StateBomb stateBomb;

@@ -7,6 +7,7 @@ import utils.AgentAction;
 import utils.ColorAgent;
 import utils.InfoAgent;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class EtatPlayerJoin implements ServerState{

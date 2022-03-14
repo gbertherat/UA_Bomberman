@@ -9,11 +9,11 @@ import java.util.Random;
 
 public class Bomberman extends Character {
 
-    public Bomberman(int id, int x, int y, BombermanGame game, boolean isAI) {
+    public Bomberman(int id, int x, int y, ColorAgent color, BombermanGame game, boolean isAI) {
         super(new InfoAgent(id, x, y,
                 AgentAction.STOP,
                 'B',
-                ColorAgent.values()[new Random().nextInt(ColorAgent.values().length)],
+                color,
                 false, true, false, false),
                 game, isAI);
     }
