@@ -26,9 +26,11 @@ public class ServerConnectionThread extends Thread {
     public void run() {
         while (!sSocket.isClosed()) {
             try {
+                // Permet la gestion de la connexion de nouveaux clients.
                 Socket socket = sSocket.accept();
                 System.out.println("New client joining");
 
+                // On lance un thread de gestion de client pour chaque clients connectés
                 ServerClientThread clientThread = new ServerClientThread(socket, server, server.getGame());
                 clientThread.start();
             } catch (SocketException e){

@@ -44,6 +44,8 @@ public class ServerClientThread extends Thread {
     @Override
     public void run() {
         try {
+            // On commence par vérifier les identifiants du client qui se connecte grâce à un appel à l'API
+            // La réponse de l'API est communiqué au client
             String line = null;
             while((line = reader.readLine()) == null){
                 try {
@@ -77,35 +79,57 @@ public class ServerClientThread extends Thread {
                         for(ServerClientThread clients : server.getClients()){
                             if(clients.getClientId() == id){
                                 System.out.println("Connection refused : Already connected.");
-                                writer.println("-1");
+                                writer.println("-1"); // Le client est déjà connecté, erreur -1
                                 return;
                             }
                         }
 
+                        // On envoie l'id du client au client en cas de connexion réussie
                         clientId = id;
                         writer.println(id);
                         server.getClients().add(this);
                     } else {
                         System.out.println("Connection refused : Wrong login / password.");
-                        writer.println("-2");
+                        writer.println("-2"); // Mauvais identifiants, erreur -2
                         return;
                     }
                 }
             }
 
             JsonServer jsonServer = new JsonServer(this.server, game);
+            // La classe JsonServer n'est pas un serveur mais elle permet de transformer les données de la partie en
+            // format JSON pour qu'ils soient envoyés à chaque clients
+            // Exemple de données envoyés:
+            // {
+            //  "walls":[],
+            //  "players":[
+            //      {
+            //          "id":5,                 "x":19,     "y":1,
+            //          "type":"B",             "color":"DEFAULT",
+            //          "action":"STOP",        "isAlive":"true",
+            //          "isActive":"true",      "canFly":"false",
+            //          "bombRange":1,          "isInvincible":"false",
+            //          "isSick":"false"
+            //      }
+            //   ],
+            //  "bombs":[],
+            //  "message":"Vous êtes connecté au server, en attente du début de la partie.",
+            //  "map":"niveau2.lay",
+            //  "items":[],
+            //  "status":"OK"
+            //  }
             while (!socket.isClosed()){
                 String obj = reader.readLine();
                 if(obj != null) {
-                    if (obj.equals("EXIT")) {
+                    if (obj.equals("EXIT")) { // Si le client envoie EXIT, il est déconnecté
                         socket.close();
                     } else if (obj.chars().allMatch(Character::isDigit)) {
                         this.clientId = Integer.parseInt(obj);
                     } else {
-                        String json = jsonServer.sendJson(clientId, obj);
+                        String json = jsonServer.sendJson(clientId, obj); // On récupère le json de la partie
 
                         if (json != null) {
-                            writer.println(json);
+                            writer.println(json); // On envoie le json au client
                         }
 
                         Thread.sleep(100);
@@ -115,7 +139,7 @@ public class ServerClientThread extends Thread {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         } finally {
-            server.removeClient(this);
+            server.removeClient(this); // En cas d'erreur le client est déconnecté.
         }
     }
 }

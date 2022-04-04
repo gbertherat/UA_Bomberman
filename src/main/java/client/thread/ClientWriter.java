@@ -29,10 +29,12 @@ public class ClientWriter extends Thread {
     @Override
     public void run() {
         while (!exit) {
-            writer.println(view.getAction().toString());
-            view.setAction(AgentAction.STOP);
+            writer.println(view.getAction().toString()); // On récupère l'action choisie par l'utilisateur
+            view.setAction(AgentAction.STOP); // Après que l'action ait été envoyé, elle est remise à STOP
             try {
                 Thread.sleep(400);
+                // Le temps de sleep ici est plutôt élevé pour avoir le temps de réfléchir à son action, le temps est
+                // le même côté serveur pour que les bots ne jouent pas instantanément et que ce soit injouable.
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

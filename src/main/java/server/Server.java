@@ -48,6 +48,7 @@ public class Server {
 
     private void addServerToServerlist(){
         try {
+            // Requête HTTP GET à l'API pour ajouter le serveur à la liste des serveurs
             CloseableHttpClient client = HttpClients.createDefault();
             HttpGet request = new HttpGet("http://127.0.0.1:8080/BombermanJEE/server"+
                     "?ip="  + sSocket.getInetAddress().getHostAddress() +
@@ -76,6 +77,7 @@ public class Server {
         }
 
         try {
+            // Requête HTTP DELETE à l'API pour supprimer le serveur de la liste des serveurs
             CloseableHttpClient client = HttpClients.createDefault();
             HttpDelete request = new HttpDelete("http://127.0.0.1:8080/BombermanJEE/server?id=" + this.id +
                     "&token=047ff0b3-d5cf-4549-b46a-1f876984c93d");
@@ -89,6 +91,7 @@ public class Server {
 
     private int addGame(){
         try {
+            // Requête HTTP POST pour ajouter la partie à la liste des parties
             CloseableHttpClient client = HttpClients.createDefault();
             HttpPost request = new HttpPost("http://127.0.0.1:8080/BombermanJEE/game/add");
 
@@ -117,6 +120,7 @@ public class Server {
 
     private void addGamePlayed(int userid, int gameid){
         try {
+            // Requête HTTP POST pour ajouter la partie à la liste des parties jouées d'un joueur
             CloseableHttpClient client = HttpClients.createDefault();
             HttpPost request = new HttpPost("http://127.0.0.1:8080/BombermanJEE/game/played");
 
@@ -134,6 +138,7 @@ public class Server {
 
     private void addGameWon(int userid, int gameid){
         try {
+            // Requête HTTP POST pour ajouter la partie à la liste des parties gagnées d'un joueur
             CloseableHttpClient client = HttpClients.createDefault();
             HttpPost request = new HttpPost("http://127.0.0.1:8080/BombermanJEE/game/won");
 
@@ -150,19 +155,24 @@ public class Server {
     }
 
     public void execute() {
-        this.sct.start();
-        addServerToServerlist();
+        // Méthode principale utilisée par le serveur, elle tourne en continue pour mettre à jour les données
+        // du jeu en fonction des actions des joueurs et des bots.
+        // Note: Pour que le serveur puisse se lancé, le serveur JEE doit être lancé aussi.
+
+        this.sct.start(); // Permet de lancer le thread de gestion des connexions utilisateurs
+        addServerToServerlist(); // On ajoute le serveur à la liste des serveurs
         System.out.println("Server listening on port: " + sSocket.getLocalPort());
 
         Runtime.getRuntime().addShutdownHook(new Thread(){
             @Override
             public void run() {
-                removeServerFromServerlist();
+                removeServerFromServerlist(); // Le serveur est supprimé s'il s'éteint.
             }
         });
 
         while(!game.isFinished()){
             if(clients.stream().filter(e -> e.getClientId() != -1).count() >= 2 && !game.isStarted()){
+                // Si le jeu n'est pas démarré et qu'on a au moins 2 joueurs connectés, on lance la partie.
                 clients.removeIf(e -> e.getClientId() == -1);
                 try {
                     this.sct.getsSocket().close();
@@ -177,15 +187,15 @@ public class Server {
                 for(int i = 0; i < getClients().size(); i++){
                     ids.add(getClients().get(i).getClientId());
                 }
-                game.addBots(getClients().size(), ids);
+                game.addBots(getClients().size(), ids); // On ajoute les bots à la partie
                 game.setStarted(true);
 
-                removeServerFromServerlist();
+                removeServerFromServerlist(); // On supprime le serveur de la liste des serveurs
             }
 
             if(game.isStarted()){
                 game.setDestroyedWalls(new ArrayList<>());
-                game.takeTurn();
+                game.takeTurn(); // Permet de mettre à jour / faire avancer la partie
             }
 
             try {
@@ -197,22 +207,22 @@ public class Server {
 
         for(ServerClientThread sct : clients){
             int clientId = sct.getClientId();
-            addGamePlayed(clientId, game.getId());
+            addGamePlayed(clientId, game.getId()); // On ajoute la partie jouée à chaque client de la partie.
         }
 
         ArrayList<Character> players = new ArrayList<>();
         game.getCharacterMap().keySet().forEach(key -> players.addAll(game.getCharacterMap().get(key)));
         if(players.size() == 1){
             Character player = players.get(0);
-            if(!player.isAI()){
-                addGameWon(player.getInfo().getId(), game.getId());
+            if(!player.isAI()){ // Si le joueur n'est pas un bot
+                addGameWon(player.getInfo().getId(), game.getId()); // On ajoute la partie gagnée au joueur gagnant
             }
         }
     }
 
     public void removeClient(ServerClientThread clientThread) {
+        // Permet de supprimer le client du serveur.
         System.out.println("A client has left!");
-
 
         for(char c : game.getCharacterMap().keySet()){
             for(Character character : game.getCharacterMap().get(c)){
@@ -225,6 +235,7 @@ public class Server {
 
         this.clients.remove(clientThread);
 
+        // S'il n'y a qu'un seul joueur de connecter, la partie se termine.
         if(this.clients.size() <= 1){
             this.game.setFinished(true);
         }
@@ -232,7 +243,7 @@ public class Server {
 
     public static void main(String[] args) {
         try {
-            Server server = new Server();
+            Server server = new Server(); // Création d'un serveur.
             server.execute();
         } catch (IOException e) {
             System.out.println("Server error (main):");

@@ -30,7 +30,7 @@ public class JsonServer {
     }
 
     public String sendJson(int id, String action) {
-        return state.sendJson(id, action);
+        return state.sendJson(id, action); // On créé le JSON en fonction de l'état de la partie.
     }
 
     public JSONObject getGameData(String message){

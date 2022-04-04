@@ -91,6 +91,7 @@ public class ViewConnection extends Frame{
 
                 Socket socket = new Socket(ipField.getText(), Integer.parseInt(portField.getText()));
 
+                // On envoie les informations de connexion au serveur pour vérification
                 PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
                 writer.println("username="+userTextField.getText()+"&password="+new String(passwordField.getPassword()));
 
@@ -105,6 +106,7 @@ public class ViewConnection extends Frame{
                     }
                 }
 
+                // Gestion des erreurs
                 if(line.equals("-1")){
                     errLabel.setText("Vous êtes déjà connecté à ce serveur!");
                     return;

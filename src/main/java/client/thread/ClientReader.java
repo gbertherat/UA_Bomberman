@@ -45,21 +45,25 @@ public class ClientReader extends Thread {
                 String line;
                 if ((line = reader.readLine()) != null) {
                     System.out.println(line);
-                    if(line.contains("EXIT")){
+                    if(line.contains("EXIT")){ // Si le client ferme sa fenêtre, on envoie "EXIT" au serveur.
                         exit = true;
                         exitCause = line.split(":")[1];
                     } else {
                         JSONObject jsonObj = (JSONObject) parser.parse(line);
                         if (jsonObj.get("status") != null && jsonObj.get("status").equals("OK")) {
                             JsonClient jClient = new JsonClient(view, jsonObj);
-                            jClient.updateView();
+                            // Même principe que le JsonServer côté serveur, la classe JsonClient permet ici de récupére
+                            // le JSON contenant les données de la partie et de mettre à jour l'affichage des clients
+                            jClient.updateView(); // Mise à jour de la vue
                         }
                     }
                 }
                 Thread.sleep(100);
+                // Le temps de sleep est bas pour mettre à jour la vue en permanence pour éviter les décalages d'affichages
+                // entre les clients
             }
         } catch (IOException | InterruptedException e) {
-            exit = true;
+            exit = true; // En cas d'erreur, on déconnecte le client
         } catch (ParseException e) {
             System.out.println("ClientReader Parse error (run): ");
             e.printStackTrace();

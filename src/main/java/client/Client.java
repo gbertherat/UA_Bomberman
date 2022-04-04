@@ -35,7 +35,7 @@ public class Client {
         this.view = view;
     }
 
-    public void execute() {
+    public void execute() { // On lance les threads writer et reader
         clientWriter.start();
         clientReader.start();
     }
@@ -56,6 +56,7 @@ public class Client {
     }
 
     public void killProcess() throws InterruptedException {
+        // Pour arrêter les threads, on met exit à true et on attends qu'ils s'arrêtent.
         clientWriter.setExit(true);
         clientWriter.join();
 
@@ -69,7 +70,7 @@ public class Client {
             view.setMap(map);
             view.init(map.get_walls().length * 48, map.get_walls()[0].length * 48, -100);
 
-            Client client = new Client(socket, id, view);
+            Client client = new Client(socket, id, view); // On créé le client
             client.execute();
 
             view.getJFrame().addWindowListener(new WindowAdapter() {
@@ -94,7 +95,7 @@ public class Client {
     }
 
     public static void main(String[] args) {
-        ViewConnection connection = new ViewConnection();
+        ViewConnection connection = new ViewConnection(); // On lance la fenêtre de connexion
         connection.init(500,600,-100);
     }
 }
